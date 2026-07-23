@@ -1,8 +1,38 @@
 import { useNavigate } from 'react-router-dom';
-import { apartments, cities } from '../data/mock.ts';
+import { type Apartment, type City } from '../data/mock.ts';
+import { useEffect, useState } from 'react';
+import { supabase } from '../supabase.ts';
 
 const CitiesPage = () => {
     const navigate = useNavigate();
+
+    const [cities, setCities] = useState<City[]>([]);
+    const [apartments, setApartments] = useState<Apartment[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const load = async () => {
+            const { data: citiesData } = await supabase
+                .from('cities')
+                .select('*');
+            const { data: aptData } = await supabase
+                .from('apartments')
+                .select('*');
+            setCities(citiesData ?? []);
+            setApartments(aptData ?? []);
+            setLoading(false);
+        };
+        load();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
+                Загрузка…
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-gray-100">
             <header className="px-5 pt-14 pb-4">
