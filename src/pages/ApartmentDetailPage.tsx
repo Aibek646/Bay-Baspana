@@ -1,5 +1,8 @@
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { apartments } from '../data/mock.ts';
+import { supabase } from '../supabase';
+import type { Apartment } from '../types.ts';
+import { useAuth } from '../useAuth.ts';
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₸';
 
@@ -7,7 +10,48 @@ const ApartmentDetailPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const apt = apartments.find((a) => a.id === id);
+    const { isStaff, loading: authLoading } = useAuth();
+
+    const [apt, setApt] = useState<Apartment | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [activePhoto, setActivePhoto] = useState(0);
+    const [fullscreen, setFullScreen] = useState(false);
+    const fullRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (authLoading) return;
+
+        const load = async () => {
+            const table = isStaff ? 'apartments' : 'apartments_public';
+
+            const { data } = await supabase
+                .from(table)
+                .select('*')
+                .eq('id', id)
+                .single();
+
+            setApt(data);
+            setLoading(false);
+        };
+
+        load();
+    }, [id, isStaff, authLoading]);
+
+    useEffect(() => {
+        if (fullscreen && fullRef.current) {
+            fullRef.current.scrollLeft =
+                activePhoto * fullRef.current.clientWidth;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fullscreen]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
+                Загрузка…
+            </div>
+        );
+    }
 
     if (!apt) {
         return (
@@ -23,31 +67,71 @@ const ApartmentDetailPage = () => {
         );
     }
 
-    const waNumber = apt.whatsapp.replace(/\D/g, '');
+    const waNumber = apt.whatsapp?.replace(/\D/g, '') ?? '';
     const waLink = `https://wa.me/${waNumber}`;
-
     return (
         <div className="min-h-screen bg-gray-100 pb-10">
-            <div className="relative h-64 bg-gray-300">
+            {/* Фото */}
+            <div className="relative h-72 bg-gray-300">
                 {apt.photos.length > 0 ? (
-                    <img
-                        src={apt.photos[0]}
-                        alt=""
-                        className="h-full w-full object-cover"
-                    />
+                    <div
+                        onClick={() => setFullScreen(true)}
+                        onScroll={(e) => {
+                            const el = e.currentTarget;
+                            setActivePhoto(
+                                Math.round(el.scrollLeft / el.clientWidth)
+                            );
+                        }}
+                        className="no-scrollbar flex h-full cursor-pointer snap-x snap-mandatory overflow-x-auto"
+                    >
+                        {apt.photos.map((url) => (
+                            <img
+                                key={url}
+                                src={url}
+                                alt=""
+                                className="h-full w-full shrink-0 snap-center object-cover"
+                            />
+                        ))}
+                    </div>
                 ) : (
                     <div className="flex h-full w-full items-center justify-center text-gray-500">
                         Нет фото
                     </div>
                 )}
+
+                {/* Кнопка назад */}
                 <button
                     onClick={() => navigate(-1)}
                     className="absolute top-12 left-4 rounded-full bg-white/90 px-4 py-2 text-blue-500 shadow transition-opacity active:opacity-70"
                 >
                     ‹ Назад
                 </button>
+
+                {/* Счётчик и точки — только если фото больше одного */}
+                {apt.photos.length > 1 && (
+                    <>
+                        <div className="absolute top-12 right-4 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white">
+                            {activePhoto + 1} / {apt.photos.length}
+                        </div>
+
+                        <div className="absolute right-0 bottom-3 left-0 flex justify-center gap-1.5">
+                            {apt.photos.map((url, index) => (
+                                <span
+                                    key={url}
+                                    className={`h-1.5 rounded-full transition-all duration-200 ${
+                                        index === activePhoto
+                                            ? 'w-4 bg-white'
+                                            : 'w-1.5 bg-white/50'
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
             </div>
+
             <div className="px-5">
+                {/* Статус */}
                 <div className="mt-5">
                     {apt.isSold ? (
                         <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-medium text-gray-600">
@@ -59,6 +143,7 @@ const ApartmentDetailPage = () => {
                         </span>
                     )}
                 </div>
+
                 <h1 className="mt-3 text-2xl font-bold text-gray-900">
                     {apt.address}
                 </h1>
@@ -66,7 +151,7 @@ const ApartmentDetailPage = () => {
                     {formatPrice(apt.price)}
                 </div>
 
-                <div className="shadow=[0_4px_14px_rgba(0,0,0,0.10)] mt-4 rounded-2xl bg-white p-5">
+                <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
                     {apt.dealType === 'cash' ? (
                         <div className="flex items-center justify-between">
                             <span className="text-gray-500">Оплата</span>
@@ -82,7 +167,6 @@ const ApartmentDetailPage = () => {
                                     Рассрочка
                                 </span>
                             </div>
-
                             <div className="flex items-center justify-between border-t border-gray-100 py-2">
                                 <span className="text-gray-500">
                                     Первоначальный взнос
@@ -91,14 +175,12 @@ const ApartmentDetailPage = () => {
                                     {formatPrice(apt.downPayment ?? 0)}
                                 </span>
                             </div>
-
                             <div className="flex items-center justify-between border-t border-gray-100 py-2">
                                 <span className="text-gray-500">Срок</span>
                                 <span className="font-medium text-gray-900">
                                     {apt.installmentMonths} мес.
                                 </span>
                             </div>
-
                             <div className="flex items-center justify-between border-t border-gray-100 py-2">
                                 <span className="text-gray-500">
                                     Ежемесячный платёж
@@ -111,28 +193,98 @@ const ApartmentDetailPage = () => {
                     )}
                 </div>
 
-                <div className="mt-6 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-                    <div className="text-sm text-gray-500">Хозяйн</div>
-                    <div className="text-lg font-semibold text-gray-900">
-                        {apt.ownerName}
-                    </div>
-                    <div className="mt-1 text-gray-600">{apt.whatsapp}</div>
-                    <a
-                        href={waLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="active:opacity-80' mt-4 flex items-center justify-center rounded-xl bg-green-500 py-3 font-semibold text-white transition-opacity"
-                    >
-                        Написать в WhatsApp
-                    </a>
-                </div>
-                <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-                    <div className="text-sm text-gray-800">
-                        {apt.comment || 'Нет комментария'}
-                    </div>
-                </div>
+                {/* Хозяин + WhatsApp */}
+
+                {isStaff && (
+                    <>
+                        {/* Хозяин + WhatsApp */}
+                        <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                            <div className="text-sm text-gray-500">Хозяин</div>
+                            <div className="text-lg font-semibold text-gray-900">
+                                {apt.ownerName}
+                            </div>
+                            <div className="mt-1 text-gray-600">
+                                {apt.whatsapp}
+                            </div>
+                            <a
+                                href={waLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="mt-4 flex items-center justify-center rounded-xl bg-green-500 py-3 font-semibold text-white transition-opacity active:opacity-80"
+                            >
+                                Написать в WhatsApp
+                            </a>
+                        </div>
+
+                        {/* Точный адрес на карте */}
+                        {apt.mapUrl && (
+                            <a
+                                href={apt.mapUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-white py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-opacity active:opacity-70"
+                            >
+                                📍 Посмотреть на карте
+                            </a>
+                        )}
+
+                        {/* Комментарий */}
+                        <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                            <div className="text-sm text-gray-500">
+                                Комментарий
+                            </div>
+                            <div className="mt-1 text-gray-800">
+                                {apt.comment || 'Нет комментария'}
+                            </div>
+                        </div>
+                    </>
+                )}
+
+                {/* Комментарий */}
             </div>
+            {/* Полноэкранный просмотр */}
+            {fullscreen && (
+                <div className="fixed inset-0 z-50 bg-black">
+                    <div
+                        ref={fullRef}
+                        onScroll={(e) => {
+                            const el = e.currentTarget;
+                            setActivePhoto(
+                                Math.round(el.scrollLeft / el.clientWidth)
+                            );
+                        }}
+                        className="no-scrollbar flex h-full snap-x snap-mandatory overflow-x-auto"
+                    >
+                        {apt.photos.map((url) => (
+                            <div
+                                key={url}
+                                className="flex h-full w-full shrink-0 snap-center items-center justify-center"
+                            >
+                                <img
+                                    src={url}
+                                    alt=""
+                                    className="max-h-full max-w-full object-contain"
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={() => setFullScreen(false)}
+                        className="absolute top-12 right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-2xl text-white backdrop-blur active:opacity-70"
+                    >
+                        ×
+                    </button>
+
+                    {apt.photos.length > 1 && (
+                        <div className="absolute top-12 left-4 rounded-full bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur">
+                            {activePhoto + 1} / {apt.photos.length}
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 };
+
 export default ApartmentDetailPage;
