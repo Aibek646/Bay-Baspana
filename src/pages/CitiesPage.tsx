@@ -1,44 +1,55 @@
 import { useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import type { Apartment, City } from '../types.ts';
-import { useEffect, useState } from 'react';
 import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
 
 const CitiesPage = () => {
     const navigate = useNavigate();
 
-    const [cities, setCities] = useState<City[]>([]);
-    const [apartments, setApartments] = useState<Apartment[]>([]);
-    const [loading, setLoading] = useState(true);
-
     const { session, isStaff, loading: authLoading } = useAuth();
 
-    useEffect(() => {
-        if (authLoading) return; // ждём, пока проверится сессия
+    const table = isStaff ? 'apartments' : 'apartments_public';
 
-        const load = async () => {
-            const table = isStaff ? 'apartments' : 'apartments_public';
+    const citiesQuery = useQuery({
+        queryKey: ['cities'],
+        queryFn: async () => {
+            const { data, error } = await supabase.from('cities').select('*');
+            if (error) throw error;
+            return data as City[];
+        },
+    });
 
-            const { data: citiesData } = await supabase
-                .from('cities')
-                .select('*');
-            const { data: aptData } = await supabase.from(table).select('*');
+    const apartmentsQuery = useQuery({
+        queryKey: ['apartments', table],
+        enabled: !authLoading,
+        queryFn: async () => {
+            const { data, error } = await supabase.from(table).select('*');
+            if (error) throw error;
+            return data as Apartment[];
+        },
+    });
 
-            setCities(citiesData ?? []);
-            setApartments(aptData ?? []);
-            setLoading(false);
-        };
-
-        load();
-    }, [isStaff, authLoading]);
-
-    if (loading) {
+    if (authLoading || citiesQuery.isLoading || apartmentsQuery.isLoading) {
         return (
             <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
                 Загрузка…
             </div>
         );
     }
+
+    if (citiesQuery.isError || apartmentsQuery.isError) {
+        return (
+            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-500">
+                Не удалось загрузить данные. Проверьте интернет.
+            </div>
+        );
+    }
+
+    const cities = citiesQuery.data ?? [];
+    const apartments = apartmentsQuery.data ?? [];
+
+    // ↓ дальше разметка без изменений
 
     return (
         <div className="min-h-screen bg-gray-100">

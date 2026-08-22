@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { Apartment, City } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
@@ -10,46 +10,58 @@ const ApartmentsPage = () => {
     const { cityId } = useParams();
     const navigate = useNavigate();
 
-    const [city, setCity] = useState<City | null>(null);
-    const [list, setList] = useState<Apartment[]>([]);
-    const [loading, setLoading] = useState(true);
-
     const { isStaff, loading: authLoading } = useAuth();
 
-    useEffect(() => {
-        if (authLoading) return; // ждём, пока проверится сессия
+    const table = isStaff ? 'apartments' : 'apartments_public';
 
-        const load = async () => {
-            const table = isStaff ? 'apartments' : 'apartments_public';
-
-            // один город по id из адреса
-            const { data: cityData } = await supabase
+    const cityQuery = useQuery({
+        queryKey: ['city', cityId],
+        queryFn: async () => {
+            const { data, error } = await supabase
                 .from('cities')
                 .select('*')
                 .eq('id', cityId)
-                .single();
+                .maybeSingle();
 
-            // только квартиры этого города
-            const { data: aptData } = await supabase
+            if (error) throw error;
+            return data as City | null;
+        },
+    });
+
+    const apartmentsQuery = useQuery({
+        queryKey: ['apartments', table, cityId],
+        enabled: !authLoading,
+        queryFn: async () => {
+            const { data, error } = await supabase
                 .from(table)
                 .select('*')
                 .eq('cityId', cityId);
 
-            setCity(cityData);
-            setList(aptData ?? []);
-            setLoading(false);
-        };
+            if (error) throw error;
+            return data as Apartment[];
+        },
+    });
 
-        load();
-    }, [cityId, isStaff, authLoading]);
-
-    if (loading) {
+    if (authLoading || cityQuery.isLoading || apartmentsQuery.isLoading) {
         return (
             <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
                 Загрузка…
             </div>
         );
     }
+
+    if (cityQuery.isError || apartmentsQuery.isError) {
+        return (
+            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-500">
+                Не удалось загрузить данные. Проверьте интернет.
+            </div>
+        );
+    }
+
+    const city = cityQuery.data;
+    const list = apartmentsQuery.data ?? [];
+
+    // ↓ разметка без изменений
 
     return (
         <div className="min-h-screen bg-gray-100">

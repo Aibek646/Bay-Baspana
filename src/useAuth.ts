@@ -1,18 +1,15 @@
 import { useEffect, useState } from 'react';
 
 import type { Session } from '@supabase/supabase-js';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from './supabase.ts';
 
 export type Role = 'admin' | 'agent' | 'viewer';
 
-type Profile = { userId: string; role: Role | null };
-
 export const useAuth = () => {
     const [session, setSession] = useState<Session | null>(null);
     const [authLoading, setAuthLoading] = useState(true);
-    const [profile, setProfile] = useState<Profile | null>(null);
 
-    // 1) следим за сессией — без изменений
     useEffect(() => {
         supabase.auth.getSession().then(({ data }) => {
             setSession(data.session);
@@ -30,42 +27,27 @@ export const useAuth = () => {
 
     const userId = session?.user.id;
 
-    // 2) есть пользователь — грузим его профиль. setState только в колбэке ответа
-    useEffect(() => {
-        if (!userId) return;
+    const roleQuery = useQuery({
+        queryKey: ['role', userId],
+        enabled: !!userId,
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', userId!)
+                .maybeSingle();
 
-        let cancelled = false;
+            if (error) throw error;
+            return (data?.role ?? null) as Role | null;
+        },
+    });
 
-        supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', userId)
-            .maybeSingle()
-            .then(({ data, error }) => {
-                if (cancelled) return;
-                setProfile({
-                    userId,
-                    role: error || !data ? null : (data.role as Role),
-                });
-            });
-
-        return () => {
-            cancelled = true;
-        };
-    }, [userId]);
-
-    // роль не хранится, а вычисляется:
-    // null = роли нет, undefined = ещё не знаем
-    const role: Role | null | undefined = !userId
-        ? null
-        : profile?.userId === userId
-          ? profile.role
-          : undefined;
+    const role = userId ? (roleQuery.data ?? null) : null;
 
     return {
         session,
         role,
-        loading: authLoading || role === undefined,
+        loading: authLoading || roleQuery.isLoading,
         isStaff: role === 'admin' || role === 'agent',
         isAdmin: role === 'admin',
     };

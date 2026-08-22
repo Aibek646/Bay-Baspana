@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { Apartment } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
@@ -12,30 +13,26 @@ const ApartmentDetailPage = () => {
 
     const { isStaff, loading: authLoading } = useAuth();
 
-    const [apt, setApt] = useState<Apartment | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [activePhoto, setActivePhoto] = useState(0);
-    const [fullscreen, setFullScreen] = useState(false);
-    const fullRef = useRef<HTMLDivElement>(null);
+    const table = isStaff ? 'apartments' : 'apartments_public';
 
-    useEffect(() => {
-        if (authLoading) return;
-
-        const load = async () => {
-            const table = isStaff ? 'apartments' : 'apartments_public';
-
-            const { data } = await supabase
+    const aptQuery = useQuery({
+        queryKey: ['apartment', table, id],
+        enabled: !authLoading,
+        queryFn: async () => {
+            const { data, error } = await supabase
                 .from(table)
                 .select('*')
                 .eq('id', id)
-                .single();
+                .maybeSingle();
 
-            setApt(data);
-            setLoading(false);
-        };
+            if (error) throw error;
+            return data as Apartment | null;
+        },
+    });
 
-        load();
-    }, [id, isStaff, authLoading]);
+    const [activePhoto, setActivePhoto] = useState(0);
+    const [fullscreen, setFullScreen] = useState(false);
+    const fullRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (fullscreen && fullRef.current) {
@@ -45,7 +42,7 @@ const ApartmentDetailPage = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fullscreen]);
 
-    if (loading) {
+    if (authLoading || aptQuery.isLoading) {
         return (
             <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
                 Загрузка…
@@ -53,7 +50,9 @@ const ApartmentDetailPage = () => {
         );
     }
 
-    if (!apt) {
+    const apt = aptQuery.data;
+
+    if (aptQuery.isError || !apt) {
         return (
             <div className="min-h-screen bg-gray-100 p-5 pt-14">
                 <button
@@ -62,13 +61,18 @@ const ApartmentDetailPage = () => {
                 >
                     ‹ Назад
                 </button>
-                <p className="mt-4 text-gray-500">Квартира не найдена</p>
+                <p className="mt-4 text-gray-500">
+                    {aptQuery.isError
+                        ? 'Не удалось загрузить квартиру'
+                        : 'Квартира не найдена'}
+                </p>
             </div>
         );
     }
 
     const waNumber = apt.whatsapp?.replace(/\D/g, '') ?? '';
     const waLink = `https://wa.me/${waNumber}`;
+
     return (
         <div className="min-h-screen bg-gray-100 pb-10">
             {/* Фото */}
