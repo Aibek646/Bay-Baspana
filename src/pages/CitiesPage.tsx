@@ -11,6 +11,22 @@ const CitiesPage = () => {
     const navigate = useNavigate();
 
     const { session, isStaff, loading: authLoading } = useAuth();
+    const tapsRef = useRef(0);
+    const timerRef = useRef<number | undefined>(undefined);
+
+    // три быстрых касания по заголовку — вход для сотрудников
+    const handleTitleTap = () => {
+        tapsRef.current += 1;
+        window.clearTimeout(timerRef.current);
+        timerRef.current = window.setTimeout(() => {
+            tapsRef.current = 0;
+        }, 800);
+
+        if (tapsRef.current >= 3) {
+            tapsRef.current = 0;
+            navigate('/login');
+        }
+    };
 
     const citiesQuery = useQuery({
         queryKey: ['cities'],
@@ -61,7 +77,10 @@ const CitiesPage = () => {
             <header className="pt-safe px-5 pb-4">
                 <div className="flex items-start justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">
+                        <h1
+                            onClick={handleTitleTap}
+                            className="text-3xl font-bold text-gray-900"
+                        >
                             SABIT BASPANA
                         </h1>
                         <p className="mt-1 text-gray-500">
