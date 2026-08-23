@@ -4,6 +4,7 @@ import type { City } from '../types.ts';
 import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
+import { useRef } from 'react';
 
 type CityCount = { cityId: string; total: number };
 
