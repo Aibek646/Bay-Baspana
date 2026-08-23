@@ -5,6 +5,7 @@ import { supabase } from '../supabase.ts';
 import { deletePhotos, uploadPhotos } from '../storage.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import { humanError } from '../errors.ts';
+import BackButton from '../components/BackButton.tsx';
 
 const AddApartmentPage = () => {
     const { cityId } = useParams();
@@ -54,13 +55,10 @@ const AddApartmentPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 pb-28">
-            <header className="px-5 pt-safe pb-4">
-                <button
-                    onClick={() => navigate(`/city/${cityId}`)}
-                    className="mb-2 text-lg text-blue-500 active:opacity-60"
-                >
-                    ‹ Назад
-                </button>
+            <header className="pt-safe px-5 pb-4">
+                <div className="mb-3">
+                    <BackButton to={`/city/${cityId}`} />
+                </div>
                 <h1 className="text-3xl font-bold text-gray-900">
                     Новая квартира
                 </h1>

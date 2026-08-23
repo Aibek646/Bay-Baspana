@@ -34,7 +34,7 @@ const CitiesPage = () => {
 
     if (authLoading || citiesQuery.isLoading || countsQuery.isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-400">
+            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-400">
                 Загрузка…
             </div>
         );
@@ -42,7 +42,7 @@ const CitiesPage = () => {
 
     if (citiesQuery.isError || countsQuery.isError) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-500">
+            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-500">
                 Не удалось загрузить данные. Проверьте интернет.
             </div>
         );
@@ -58,11 +58,11 @@ const CitiesPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="px-5 pt-safe pb-4">
+            <header className="pt-safe px-5 pb-4">
                 <div className="flex items-start justify-between">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">
-                            BAY BASPANA
+                            SABIT BASPANA
                         </h1>
                         <p className="mt-1 text-gray-500">
                             Объекты недвижимости

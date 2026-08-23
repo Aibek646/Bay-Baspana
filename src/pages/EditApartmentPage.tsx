@@ -9,6 +9,7 @@ import { apartmentKeys } from '../queryKey.ts';
 import { humanError } from '../errors.ts';
 import { useState } from 'react';
 import ConfirmDialog from '../components/ConfirmDialog.tsx';
+import BackButton from '../components/BackButton.tsx';
 
 const EditApartmentPage = () => {
     const { id } = useParams();
@@ -124,12 +125,11 @@ const EditApartmentPage = () => {
             });
             navigate(`/city/${cityId}`, { replace: true });
         },
-        onError: (err) => alert('Не удалось удалить: ' + err.message),
     });
 
     if (authLoading || aptQuery.isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-400">
+            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-400">
                 Загрузка…
             </div>
         );
@@ -137,7 +137,7 @@ const EditApartmentPage = () => {
 
     if (!isStaff) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-500">
+            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-500">
                 Нет доступа
             </div>
         );
@@ -147,7 +147,7 @@ const EditApartmentPage = () => {
 
     if (aptQuery.isError || !apt) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-500">
+            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-500">
                 {aptQuery.isError
                     ? 'Не удалось загрузить квартиру'
                     : 'Квартира не найдена'}
@@ -157,13 +157,10 @@ const EditApartmentPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-100 pb-28">
-            <header className="px-5 pt-safe pb-4">
-                <button
-                    onClick={() => navigate(`/apartment/${id}`)}
-                    className="mb-2 text-lg text-blue-500 active:opacity-60"
-                >
-                    ‹ Назад
-                </button>
+            <header className="pt-safe px-5 pb-4">
+                <div className="mb-3">
+                    <BackButton to={`/apartment/${id}`} />
+                </div>
                 <h1 className="text-3xl font-bold text-gray-900">
                     Изменить квартиру
                 </h1>

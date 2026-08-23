@@ -5,6 +5,7 @@ import { supabase } from '../supabase';
 import type { Apartment } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
+import BackButton from '../components/BackButton.tsx';
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₸';
 
@@ -45,7 +46,7 @@ const ApartmentDetailPage = () => {
 
     if (authLoading || aptQuery.isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-400">
+            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-400">
                 Загрузка…
             </div>
         );
@@ -55,13 +56,8 @@ const ApartmentDetailPage = () => {
 
     if (aptQuery.isError || !apt) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe">
-                <button
-                    onClick={() => navigate('/')}
-                    className="text-lg text-blue-500"
-                >
-                    ‹ Назад
-                </button>
+            <div className="pt-safe min-h-screen bg-gray-100 p-5">
+                <BackButton to="/" />
                 <p className="mt-4 text-gray-500">
                     {aptQuery.isError
                         ? 'Не удалось загрузить квартиру'
@@ -105,17 +101,14 @@ const ApartmentDetailPage = () => {
                 )}
 
                 {/* Кнопка назад */}
-                <button
-                    onClick={() => navigate(`/city/${apt.cityId}`)}
-                    className="absolute top-safe left-4 rounded-full bg-white/90 px-4 py-2 text-blue-500 shadow transition-opacity active:opacity-70"
-                >
-                    ‹ Назад
-                </button>
+                <div className="top-safe absolute left-4 z-10">
+                    <BackButton to={`/city/${apt.cityId}`} variant="overlay" />
+                </div>
 
                 {/* Счётчик и точки — только если фото больше одного */}
                 {apt.photos.length > 1 && (
                     <>
-                        <div className="absolute top-safe right-4 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white">
+                        <div className="top-safe absolute right-4 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white">
                             {activePhoto + 1} / {apt.photos.length}
                         </div>
 
@@ -284,13 +277,13 @@ const ApartmentDetailPage = () => {
 
                     <button
                         onClick={() => setFullScreen(false)}
-                        className="absolute top-safe right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-2xl text-white backdrop-blur active:opacity-70"
+                        className="top-safe absolute right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-2xl text-white backdrop-blur active:opacity-70"
                     >
                         ×
                     </button>
 
                     {apt.photos.length > 1 && (
-                        <div className="absolute top-safe left-4 rounded-full bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur">
+                        <div className="top-safe absolute left-4 rounded-full bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur">
                             {activePhoto + 1} / {apt.photos.length}
                         </div>
                     )}

@@ -4,6 +4,7 @@ import { supabase } from '../supabase';
 import type { Apartment, City } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
+import BackButton from '../components/BackButton.tsx';
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₸';
 
@@ -45,7 +46,7 @@ const ApartmentsPage = () => {
 
     if (authLoading || cityQuery.isLoading || apartmentsQuery.isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-400">
+            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-400">
                 Загрузка…
             </div>
         );
@@ -53,7 +54,7 @@ const ApartmentsPage = () => {
 
     if (cityQuery.isError || apartmentsQuery.isError) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-500">
+            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-500">
                 Не удалось загрузить данные. Проверьте интернет.
             </div>
         );
@@ -66,13 +67,10 @@ const ApartmentsPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="px-5 pt-safe pb-4">
-                <button
-                    onClick={() => navigate('/')}
-                    className="mb-2 text-lg text-blue-500 transition-opacity active:opacity-60"
-                >
-                    ‹ Назад
-                </button>
+            <header className="pt-safe px-5 pb-4">
+                <div className="mb-3">
+                    <BackButton to="/" />
+                </div>
                 <h1 className="text-3xl font-bold text-gray-900">
                     {city?.name}
                 </h1>
@@ -136,7 +134,7 @@ const ApartmentsPage = () => {
             {isStaff && (
                 <button
                     onClick={() => navigate(`/city/${cityId}/add`)}
-                    className="fixed right-6 bottom-safe flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-3xl text-white shadow-lg transition-opacity active:opacity-80"
+                    className="bottom-safe fixed right-6 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-3xl text-white shadow-lg transition-opacity active:opacity-80"
                 >
                     +
                 </button>
