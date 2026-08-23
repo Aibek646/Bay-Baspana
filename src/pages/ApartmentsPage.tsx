@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { Apartment, City } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
+import { apartmentKeys } from '../queryKey.ts';
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₸';
 
@@ -29,7 +30,7 @@ const ApartmentsPage = () => {
     });
 
     const apartmentsQuery = useQuery({
-        queryKey: ['apartments', table, cityId],
+        queryKey: apartmentKeys.list(table, cityId),
         enabled: !authLoading,
         queryFn: async () => {
             const { data, error } = await supabase
@@ -67,7 +68,7 @@ const ApartmentsPage = () => {
         <div className="min-h-screen bg-gray-100">
             <header className="px-5 pt-14 pb-4">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate('/')}
                     className="mb-2 text-lg text-blue-500 transition-opacity active:opacity-60"
                 >
                     ‹ Назад

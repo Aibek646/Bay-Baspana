@@ -1,31 +1,10 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import ApartmentForm, { type FormState } from '../components/ApartmentForm';
-import type { DealType } from '../types';
+import ApartmentForm, { type SubmitPayload } from '../components/ApartmentForm';
 import { supabase } from '../supabase.ts';
-
-const uploadPhotos = async (files: File[]) => {
-    const urls: string[] = [];
-
-    for (const file of files) {
-        const ext = file.name.split('.').pop();
-        const path = `${crypto.randomUUID()}.${ext}`;
-
-        const { error } = await supabase.storage
-            .from('apartment-photos')
-            .upload(path, file);
-
-        if (error) throw error;
-
-        const { data } = supabase.storage
-            .from('apartment-photos')
-            .getPublicUrl(path);
-        urls.push(data.publicUrl);
-    }
-
-    return urls;
-};
+import { uploadPhotos } from '../storage.ts';
+import { apartmentKeys } from '../queryKey.ts';
 
 const AddApartmentPage = () => {
     const { cityId } = useParams();
@@ -34,11 +13,7 @@ const AddApartmentPage = () => {
 
     const [saving, setSaving] = useState(false);
 
-    const handleSubmit = async (
-        form: FormState,
-        dealType: DealType,
-        files: File[]
-    ) => {
+    const handleSubmit = async ({ form, dealType, files }: SubmitPayload) => {
         setSaving(true);
 
         try {
@@ -67,8 +42,10 @@ const AddApartmentPage = () => {
 
             if (error) throw error;
 
-            await queryClient.invalidateQueries({ queryKey: ['apartments'] });
-            navigate(`/city/${cityId}`);
+            await queryClient.invalidateQueries({
+                queryKey: apartmentKeys.all,
+            });
+            navigate(`/city/${cityId}`, { replace: true });
         } catch (err) {
             alert('Ошибка: ' + (err as Error).message);
         } finally {
@@ -80,7 +57,7 @@ const AddApartmentPage = () => {
         <div className="min-h-screen bg-gray-100 pb-28">
             <header className="px-5 pt-14 pb-4">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(`/city/${cityId}`)}
                     className="mb-2 text-lg text-blue-500 active:opacity-60"
                 >
                     ‹ Назад

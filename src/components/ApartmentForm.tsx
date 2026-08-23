@@ -74,11 +74,18 @@ const toFormState = (apt: Apartment): FormState => ({
     comment: apt.comment ?? '',
 });
 
+export type SubmitPayload = {
+    form: FormState;
+    dealType: DealType;
+    files: File[];
+    removedPhotos: string[];
+};
+
 type ApartmentFormProps = {
     initial?: Apartment; // есть — редактирование, нет — создание
     saving: boolean;
     submitLabel: string;
-    onSubmit: (form: FormState, dealType: DealType, files: File[]) => void;
+    onSubmit: (payload: SubmitPayload) => void;
 };
 
 const ApartmentForm = ({
@@ -97,6 +104,18 @@ const ApartmentForm = ({
     const [files, setFiles] = useState<File[]>([]);
     const [previews, setPreviews] = useState<string[]>([]);
 
+    const [removedPhotos, setRemovedPhotos] = useState<string[]>([]);
+
+    const existingPhotos = (initial?.photos ?? []).filter(
+        (url) => !removedPhotos.includes(url)
+    );
+
+    const removePhoto = (index: number) => {
+        URL.revokeObjectURL(previews[index]);
+        setFiles((prev) => prev.filter((_, i) => i !== index));
+        setPreviews((prev) => prev.filter((_, i) => i !== index));
+    };
+
     const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selected = Array.from(e.target.files ?? []);
         setFiles((prev) => [...prev, ...selected]);
@@ -105,11 +124,6 @@ const ApartmentForm = ({
             ...selected.map((f) => URL.createObjectURL(f)),
         ]);
         e.target.value = '';
-    };
-
-    const removePhoto = (index: number) => {
-        setFiles((prev) => prev.filter((_, i) => i !== index));
-        setPreviews((prev) => prev.filter((_, i) => i !== index));
     };
 
     const setField = (name: string, value: string | boolean) => {
@@ -131,7 +145,7 @@ const ApartmentForm = ({
             alert('Укажите район');
             return;
         }
-        onSubmit(form, dealType, files);
+        onSubmit({ form, dealType, files, removedPhotos });
     };
 
     return (
@@ -139,25 +153,43 @@ const ApartmentForm = ({
             {renderFields(mainFields)}
 
             {/* Уже загруженные фото — при редактировании */}
-            {initial && initial.photos.length > 0 && (
+            {existingPhotos.length > 0 && (
                 <div>
                     <label className="mb-1 block text-sm text-gray-500">
                         Загруженные фото
                     </label>
                     <div className="grid grid-cols-3 gap-2">
-                        {initial.photos.map((url) => (
+                        {existingPhotos.map((url) => (
                             <div
                                 key={url}
-                                className="aspect-square overflow-hidden rounded-xl bg-gray-200"
+                                className="relative aspect-square overflow-hidden rounded-xl bg-gray-200"
                             >
                                 <img
                                     src={url}
                                     alt=""
                                     className="h-full w-full object-cover"
                                 />
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setRemovedPhotos((prev) => [
+                                            ...prev,
+                                            url,
+                                        ])
+                                    }
+                                    className="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-sm text-white"
+                                >
+                                    ×
+                                </button>
                             </div>
                         ))}
                     </div>
+
+                    {removedPhotos.length > 0 && (
+                        <p className="mt-1 text-xs text-gray-500">
+                            {removedPhotos.length} фото удалим после сохранения
+                        </p>
+                    )}
                 </div>
             )}
 

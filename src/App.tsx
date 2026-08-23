@@ -4,6 +4,8 @@ import ApartmentsPage from './pages/ApartmentsPage.tsx';
 import ApartmentDetailPage from './pages/ApartmentDetailPage.tsx';
 import AddApartmentPage from './pages/AddApartmentPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
+import EditApartmentPage from './pages/EditApartmentPage.tsx';
+import NotFoundPage from './pages/NotFoundPage.tsx';
 
 function App() {
     return (
@@ -13,6 +15,8 @@ function App() {
             <Route path="/city/:cityId/add" element={<AddApartmentPage />} />
             <Route path="/apartment/:id" element={<ApartmentDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/apartment/:id/edit" element={<EditApartmentPage />} />
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
 }

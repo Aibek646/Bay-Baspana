@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { Apartment, City } from '../types.ts';
 import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
+import { apartmentKeys } from '../queryKey.ts';
 
 const CitiesPage = () => {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ const CitiesPage = () => {
     });
 
     const apartmentsQuery = useQuery({
-        queryKey: ['apartments', table],
+        queryKey: apartmentKeys.list(table),
         enabled: !authLoading,
         queryFn: async () => {
             const { data, error } = await supabase.from(table).select('*');

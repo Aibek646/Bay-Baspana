@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { Apartment } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
+import { apartmentKeys } from '../queryKey.ts';
 
 const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₸';
 
@@ -16,7 +17,7 @@ const ApartmentDetailPage = () => {
     const table = isStaff ? 'apartments' : 'apartments_public';
 
     const aptQuery = useQuery({
-        queryKey: ['apartment', table, id],
+        queryKey: apartmentKeys.detail(table, id),
         enabled: !authLoading,
         queryFn: async () => {
             const { data, error } = await supabase
@@ -56,7 +57,7 @@ const ApartmentDetailPage = () => {
         return (
             <div className="min-h-screen bg-gray-100 p-5 pt-14">
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate('/')}
                     className="text-lg text-blue-500"
                 >
                     ‹ Назад
@@ -105,7 +106,7 @@ const ApartmentDetailPage = () => {
 
                 {/* Кнопка назад */}
                 <button
-                    onClick={() => navigate(-1)}
+                    onClick={() => navigate(`/city/${apt.cityId}`)}
                     className="absolute top-12 left-4 rounded-full bg-white/90 px-4 py-2 text-blue-500 shadow transition-opacity active:opacity-70"
                 >
                     ‹ Назад
@@ -231,6 +232,14 @@ const ApartmentDetailPage = () => {
                                 📍 Посмотреть на карте
                             </a>
                         )}
+                        <button
+                            onClick={() =>
+                                navigate(`/apartment/${apt.id}/edit`)
+                            }
+                            className="mt-4 w-full rounded-2xl bg-blue-500 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 active:opacity-80 active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
+                        >
+                            Изменить
+                        </button>
 
                         {/* Комментарий */}
                         <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
