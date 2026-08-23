@@ -1,5 +1,17 @@
 @import 'tailwindcss';
 
+@utility pt-safe {
+    padding-top: max(3.5rem, calc(env(safe-area-inset-top) + 1rem));
+}
+
+@utility top-safe {
+    top: max(3rem, calc(env(safe-area-inset-top) + 0.75rem));
+}
+
+@utility bottom-safe {
+    bottom: max(1.5rem, calc(env(safe-area-inset-bottom) + 0.5rem));
+}
+
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }

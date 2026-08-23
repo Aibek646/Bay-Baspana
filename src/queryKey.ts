@@ -1,5 +1,6 @@
 export const apartmentKeys = {
     all: ['apartments'],
+    counts: () => ['apartments', 'counts'],
     list: (table: string, cityId?: string) => [
         'apartments',
         'list',

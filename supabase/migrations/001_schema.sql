@@ -62,3 +62,13 @@ insert into public.cities (id, name) values
                                          ('almaty', 'Алматы'),
                                          ('astana', 'Астана')
     on conflict (id) do nothing;
+
+
+create view public.city_apartment_counts as
+select "cityId", count(*)::int as total
+from public.apartments
+group by "cityId";
+
+grant select on public.city_apartment_counts to anon, authenticated;
+
+notify pgrst, 'reload schema';

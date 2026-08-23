@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import type { Apartment, City } from '../types.ts';
+import type { City } from '../types.ts';
 import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
+
+type CityCount = { cityId: string; total: number };
 
 const CitiesPage = () => {
     const navigate = useNavigate();
 
     const { session, isStaff, loading: authLoading } = useAuth();
-
-    const table = isStaff ? 'apartments' : 'apartments_public';
 
     const citiesQuery = useQuery({
         queryKey: ['cities'],
@@ -21,40 +21,44 @@ const CitiesPage = () => {
         },
     });
 
-    const apartmentsQuery = useQuery({
-        queryKey: apartmentKeys.list(table),
-        enabled: !authLoading,
+    const countsQuery = useQuery({
+        queryKey: apartmentKeys.counts(),
         queryFn: async () => {
-            const { data, error } = await supabase.from(table).select('*');
+            const { data, error } = await supabase
+                .from('city_apartment_counts')
+                .select('*');
             if (error) throw error;
-            return data as Apartment[];
+            return data as CityCount[];
         },
     });
 
-    if (authLoading || citiesQuery.isLoading || apartmentsQuery.isLoading) {
+    if (authLoading || citiesQuery.isLoading || countsQuery.isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-400">
                 Загрузка…
             </div>
         );
     }
 
-    if (citiesQuery.isError || apartmentsQuery.isError) {
+    if (citiesQuery.isError || countsQuery.isError) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-500">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-500">
                 Не удалось загрузить данные. Проверьте интернет.
             </div>
         );
     }
 
     const cities = citiesQuery.data ?? [];
-    const apartments = apartmentsQuery.data ?? [];
+
+    const counts = new Map(
+        (countsQuery.data ?? []).map((row) => [row.cityId, row.total])
+    );
 
     // ↓ дальше разметка без изменений
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="px-5 pt-14 pb-4">
+            <header className="px-5 pt-safe pb-4">
                 <div className="flex items-start justify-between">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900">
@@ -81,9 +85,7 @@ const CitiesPage = () => {
             </header>
             <div className="space-y-3 px-5">
                 {cities.map((city) => {
-                    const count = apartments.filter(
-                        (a) => a.cityId === city.id
-                    ).length;
+                    const count = counts.get(city.id) ?? 0;
                     return (
                         <button
                             onClick={() => navigate(`/city/${city.id}`)}

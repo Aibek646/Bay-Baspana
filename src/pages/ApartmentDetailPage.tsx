@@ -45,7 +45,7 @@ const ApartmentDetailPage = () => {
 
     if (authLoading || aptQuery.isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-400">
                 Загрузка…
             </div>
         );
@@ -55,7 +55,7 @@ const ApartmentDetailPage = () => {
 
     if (aptQuery.isError || !apt) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe">
                 <button
                     onClick={() => navigate('/')}
                     className="text-lg text-blue-500"
@@ -107,7 +107,7 @@ const ApartmentDetailPage = () => {
                 {/* Кнопка назад */}
                 <button
                     onClick={() => navigate(`/city/${apt.cityId}`)}
-                    className="absolute top-12 left-4 rounded-full bg-white/90 px-4 py-2 text-blue-500 shadow transition-opacity active:opacity-70"
+                    className="absolute top-safe left-4 rounded-full bg-white/90 px-4 py-2 text-blue-500 shadow transition-opacity active:opacity-70"
                 >
                     ‹ Назад
                 </button>
@@ -115,7 +115,7 @@ const ApartmentDetailPage = () => {
                 {/* Счётчик и точки — только если фото больше одного */}
                 {apt.photos.length > 1 && (
                     <>
-                        <div className="absolute top-12 right-4 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white">
+                        <div className="absolute top-safe right-4 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white">
                             {activePhoto + 1} / {apt.photos.length}
                         </div>
 
@@ -284,13 +284,13 @@ const ApartmentDetailPage = () => {
 
                     <button
                         onClick={() => setFullScreen(false)}
-                        className="absolute top-12 right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-2xl text-white backdrop-blur active:opacity-70"
+                        className="absolute top-safe right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/20 text-2xl text-white backdrop-blur active:opacity-70"
                     >
                         ×
                     </button>
 
                     {apt.photos.length > 1 && (
-                        <div className="absolute top-12 left-4 rounded-full bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur">
+                        <div className="absolute top-safe left-4 rounded-full bg-white/20 px-3 py-1.5 text-sm font-medium text-white backdrop-blur">
                             {activePhoto + 1} / {apt.photos.length}
                         </div>
                     )}

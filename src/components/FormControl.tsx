@@ -12,12 +12,15 @@ type FormControlProps = {
     field: Field;
     value: string | boolean;
     onChange: (value: string | boolean) => void;
+    error?: string;
 };
 
-const inputClass =
-    'w-full rounded-xl border border-gray-200 bg-white p-3 text-gray-900 outline-none focus:border-blue-400';
+const inputClass = (hasError: boolean) =>
+    `w-full rounded-xl border bg-white p-3 text-gray-900 outline-none ${
+        hasError ? 'border-red-400' : 'border-gray-200 focus:border-blue-400'
+    }`;
 
-const FormControl = ({ field, value, onChange }: FormControlProps) => {
+const FormControl = ({ field, value, onChange, error }: FormControlProps) => {
     const { name, label, type = 'text', placeholder, options } = field;
 
     const id = `id-${name}-${type}`;
@@ -51,7 +54,7 @@ const FormControl = ({ field, value, onChange }: FormControlProps) => {
                 placeholder={placeholder}
                 value={String(value ?? '')}
                 onChange={(e) => onChange(e.target.value)}
-                className={inputClass}
+                className={inputClass(Boolean(error))}
             />
         );
     } else if (type === 'textarea') {
@@ -62,7 +65,7 @@ const FormControl = ({ field, value, onChange }: FormControlProps) => {
                 placeholder={placeholder}
                 value={String(value ?? '')}
                 onChange={(e) => onChange(e.target.value)}
-                className={inputClass}
+                className={inputClass(Boolean(error))}
             />
         );
     } else if (type === 'select') {
@@ -71,7 +74,7 @@ const FormControl = ({ field, value, onChange }: FormControlProps) => {
                 id={id}
                 value={String(value ?? '')}
                 onChange={(e) => onChange(e.target.value)}
-                className={inputClass}
+                className={inputClass(Boolean(error))}
             >
                 {options?.map((option) => (
                     <option key={option.value} value={option.value}>
@@ -88,6 +91,7 @@ const FormControl = ({ field, value, onChange }: FormControlProps) => {
                 {label}
             </label>
             {inputElement}
+            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
     );
 };

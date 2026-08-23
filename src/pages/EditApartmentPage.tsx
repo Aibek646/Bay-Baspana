@@ -6,6 +6,9 @@ import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
 import { deletePhotos, uploadPhotos } from '../storage.ts';
 import { apartmentKeys } from '../queryKey.ts';
+import { humanError } from '../errors.ts';
+import { useState } from 'react';
+import ConfirmDialog from '../components/ConfirmDialog.tsx';
 
 const EditApartmentPage = () => {
     const { id } = useParams();
@@ -13,6 +16,7 @@ const EditApartmentPage = () => {
     const queryClient = useQueryClient();
 
     const { isStaff, isAdmin, loading: authLoading } = useAuth();
+    const [confirmOpen, setConfirmOpen] = useState(false);
 
     const aptQuery = useQuery({
         queryKey: apartmentKeys.detail('apartments', id),
@@ -70,7 +74,13 @@ const EditApartmentPage = () => {
                 })
                 .eq('id', id);
 
-            if (error) throw error;
+            if (error) {
+                // строка не изменилась — новые фото не нужны
+                await deletePhotos(newUrls).catch((err) =>
+                    console.warn('Не удалось убрать загруженные фото:', err)
+                );
+                throw error;
+            }
 
             if (removedPhotos.length > 0) {
                 try {
@@ -86,7 +96,6 @@ const EditApartmentPage = () => {
             });
             navigate(`/apartment/${id}`, { replace: true });
         },
-        onError: (err) => alert('Ошибка: ' + err.message),
     });
 
     const deleteMutation = useMutation({
@@ -120,7 +129,7 @@ const EditApartmentPage = () => {
 
     if (authLoading || aptQuery.isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-400">
                 Загрузка…
             </div>
         );
@@ -128,7 +137,7 @@ const EditApartmentPage = () => {
 
     if (!isStaff) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-500">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-500">
                 Нет доступа
             </div>
         );
@@ -138,7 +147,7 @@ const EditApartmentPage = () => {
 
     if (aptQuery.isError || !apt) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-500">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-500">
                 {aptQuery.isError
                     ? 'Не удалось загрузить квартиру'
                     : 'Квартира не найдена'}
@@ -146,16 +155,9 @@ const EditApartmentPage = () => {
         );
     }
 
-    const handleDelete = () => {
-        const confirmed = window.confirm(
-            `Удалить «${apt.address}»? Фото тоже будут удалены. Действие необратимо.`
-        );
-        if (confirmed) deleteMutation.mutate();
-    };
-
     return (
         <div className="min-h-screen bg-gray-100 pb-28">
-            <header className="px-5 pt-14 pb-4">
+            <header className="px-5 pt-safe pb-4">
                 <button
                     onClick={() => navigate(`/apartment/${id}`)}
                     className="mb-2 text-lg text-blue-500 active:opacity-60"
@@ -171,12 +173,13 @@ const EditApartmentPage = () => {
                 initial={apt}
                 saving={saveMutation.isPending}
                 submitLabel="Сохранить изменения"
+                saveError={humanError(saveMutation.error)}
                 onSubmit={saveMutation.mutate}
             />
             {isAdmin && (
                 <div className="mt-8 px-5">
                     <button
-                        onClick={handleDelete}
+                        onClick={() => setConfirmOpen(true)}
                         disabled={deleteMutation.isPending}
                         className="w-full rounded-xl border border-red-200 bg-white py-3 font-semibold text-red-600 transition-all duration-200 active:opacity-70 disabled:opacity-50"
                     >
@@ -184,6 +187,22 @@ const EditApartmentPage = () => {
                             ? 'Удаляем…'
                             : 'Удалить квартиру'}
                     </button>
+                    {deleteMutation.isError && (
+                        <p className="mt-2 text-sm text-red-600">
+                            {humanError(deleteMutation.error)}
+                        </p>
+                    )}
+                    {confirmOpen && (
+                        <ConfirmDialog
+                            title="Удалить квартиру?"
+                            message={`«${apt.address}» и её фотографии будут удалены. Отменить будет нельзя.`}
+                            confirmLabel="Удалить"
+                            busyLabel="Удаляем…"
+                            busy={deleteMutation.isPending}
+                            onConfirm={() => deleteMutation.mutate()}
+                            onCancel={() => setConfirmOpen(false)}
+                        />
+                    )}
                 </div>
             )}
         </div>

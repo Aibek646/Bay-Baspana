@@ -45,7 +45,7 @@ const ApartmentsPage = () => {
 
     if (authLoading || cityQuery.isLoading || apartmentsQuery.isLoading) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-400">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-400">
                 Загрузка…
             </div>
         );
@@ -53,7 +53,7 @@ const ApartmentsPage = () => {
 
     if (cityQuery.isError || apartmentsQuery.isError) {
         return (
-            <div className="min-h-screen bg-gray-100 p-5 pt-14 text-gray-500">
+            <div className="min-h-screen bg-gray-100 p-5 pt-safe text-gray-500">
                 Не удалось загрузить данные. Проверьте интернет.
             </div>
         );
@@ -66,7 +66,7 @@ const ApartmentsPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="px-5 pt-14 pb-4">
+            <header className="px-5 pt-safe pb-4">
                 <button
                     onClick={() => navigate('/')}
                     className="mb-2 text-lg text-blue-500 transition-opacity active:opacity-60"
@@ -136,7 +136,7 @@ const ApartmentsPage = () => {
             {isStaff && (
                 <button
                     onClick={() => navigate(`/city/${cityId}/add`)}
-                    className="fixed right-6 bottom-6 flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-3xl text-white shadow-lg transition-opacity active:opacity-80"
+                    className="fixed right-6 bottom-safe flex h-14 w-14 items-center justify-center rounded-full bg-blue-500 text-3xl text-white shadow-lg transition-opacity active:opacity-80"
                 >
                     +
                 </button>

@@ -57,6 +57,53 @@ const emptyForm: FormState = {
     isSold: false,
     comment: '',
 };
+type Errors = Record<string, string>;
+
+const digitsOf = (value: string) => value.replace(/\D/g, '');
+
+const validate = (form: FormState, dealType: DealType): Errors => {
+    const errors: Errors = {};
+
+    if (!String(form.address).trim()) {
+        errors.address = 'Укажите район';
+    }
+
+    const priceRaw = String(form.price).trim();
+    const price = Number(priceRaw);
+    if (!priceRaw) {
+        errors.price = 'Укажите цену';
+    } else if (!Number.isFinite(price) || price <= 0) {
+        errors.price = 'Цена должна быть больше нуля';
+    }
+
+    const wa = digitsOf(String(form.whatsapp));
+    if (wa && (wa.length < 10 || wa.length > 15)) {
+        errors.whatsapp = 'Похоже, номер неполный';
+    }
+
+    const mapUrl = String(form.mapUrl).trim();
+    if (mapUrl && !/^https?:\/\//.test(mapUrl)) {
+        errors.mapUrl = 'Ссылка должна начинаться с http';
+    }
+
+    if (dealType === 'installment') {
+        const required = [
+            ['downPayment', 'Укажите первоначальный взнос'],
+            ['installmentMonths', 'Укажите срок'],
+            ['monthlyPayment', 'Укажите ежемесячный платёж'],
+        ] as const;
+
+        for (const [name, message] of required) {
+            const raw = String(form[name]).trim();
+            const value = Number(raw);
+            if (!raw || !Number.isFinite(value) || value <= 0) {
+                errors[name] = message;
+            }
+        }
+    }
+
+    return errors;
+};
 
 // Квартира из базы → значения формы: числа в строки, отсутствующее в пустую строку
 const toFormState = (apt: Apartment): FormState => ({
@@ -82,9 +129,10 @@ export type SubmitPayload = {
 };
 
 type ApartmentFormProps = {
-    initial?: Apartment; // есть — редактирование, нет — создание
+    initial?: Apartment;
     saving: boolean;
     submitLabel: string;
+    saveError?: string;
     onSubmit: (payload: SubmitPayload) => void;
 };
 
@@ -92,6 +140,7 @@ const ApartmentForm = ({
     initial,
     saving,
     submitLabel,
+    saveError,
     onSubmit,
 }: ApartmentFormProps) => {
     const [form, setForm] = useState<FormState>(
@@ -109,6 +158,7 @@ const ApartmentForm = ({
     const existingPhotos = (initial?.photos ?? []).filter(
         (url) => !removedPhotos.includes(url)
     );
+    const [errors, setErrors] = useState<Errors>({});
 
     const removePhoto = (index: number) => {
         URL.revokeObjectURL(previews[index]);
@@ -128,6 +178,13 @@ const ApartmentForm = ({
 
     const setField = (name: string, value: string | boolean) => {
         setForm((prev) => ({ ...prev, [name]: value }));
+
+        setErrors((prev) => {
+            if (!prev[name]) return prev;
+            const next = { ...prev };
+            delete next[name];
+            return next;
+        });
     };
 
     const renderFields = (fields: Field[]) =>
@@ -137,15 +194,22 @@ const ApartmentForm = ({
                 field={field}
                 value={form[field.name]}
                 onChange={(value) => setField(field.name, value)}
+                error={errors[field.name]}
             />
         ));
 
     const handleSubmit = () => {
-        if (!form.address) {
-            alert('Укажите район');
-            return;
-        }
+        const found = validate(form, dealType);
+        setErrors(found);
+
+        if (Object.keys(found).length > 0) return;
+
         onSubmit({ form, dealType, files, removedPhotos });
+    };
+
+    const changeDealType = (next: DealType) => {
+        setDealType(next);
+        setErrors({});
     };
 
     return (
@@ -241,14 +305,14 @@ const ApartmentForm = ({
                 <div className="flex gap-2">
                     <button
                         type="button"
-                        onClick={() => setDealType('cash')}
+                        onClick={() => changeDealType('cash')}
                         className={`flex-1 rounded-xl p-3 font-medium ${dealType === 'cash' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}
                     >
                         Наличными
                     </button>
                     <button
                         type="button"
-                        onClick={() => setDealType('installment')}
+                        onClick={() => changeDealType('installment')}
                         className={`flex-1 rounded-xl p-3 font-medium ${dealType === 'installment' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}
                     >
                         Рассрочка
@@ -263,6 +327,17 @@ const ApartmentForm = ({
             )}
 
             {renderFields(tailFields)}
+
+            {Object.keys(errors).length > 0 && (
+                <p className="text-sm text-red-500">
+                    Проверьте выделенные поля
+                </p>
+            )}
+            {saveError && (
+                <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
+                    {saveError}
+                </p>
+            )}
 
             <button
                 onClick={handleSubmit}

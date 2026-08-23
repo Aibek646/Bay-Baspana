@@ -77,6 +77,12 @@ create policy "staff delete photos" on storage.objects
   for delete to authenticated
   using (bucket_id = 'apartment-photos' and public.is_staff());
 
+             create policy "staff read photo objects" on storage.objects
+  for select to authenticated
+                                                                using (bucket_id = 'apartment-photos' and public.is_staff());
+
+
+
 -- ПОСЛЕ развёртывания вручную:
 --   1) Authentication → Users → создать первого сотрудника (Auto Confirm)
 --   2) update public.profiles set role = 'admin' where id = '<его uuid>';

@@ -1,22 +1,18 @@
-import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
 import ApartmentForm, { type SubmitPayload } from '../components/ApartmentForm';
 import { supabase } from '../supabase.ts';
-import { uploadPhotos } from '../storage.ts';
+import { deletePhotos, uploadPhotos } from '../storage.ts';
 import { apartmentKeys } from '../queryKey.ts';
+import { humanError } from '../errors.ts';
 
 const AddApartmentPage = () => {
     const { cityId } = useParams();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const [saving, setSaving] = useState(false);
-
-    const handleSubmit = async ({ form, dealType, files }: SubmitPayload) => {
-        setSaving(true);
-
-        try {
+    const saveMutation = useMutation({
+        mutationFn: async ({ form, dealType, files }: SubmitPayload) => {
             const photos = await uploadPhotos(files);
             const isInstallment = dealType === 'installment';
 
@@ -40,22 +36,25 @@ const AddApartmentPage = () => {
                 photos,
             });
 
-            if (error) throw error;
-
+            if (error) {
+                // квартира не создалась — фото никому не нужны
+                await deletePhotos(photos).catch((err) =>
+                    console.warn('Не удалось убрать загруженные фото:', err)
+                );
+                throw error;
+            }
+        },
+        onSuccess: async () => {
             await queryClient.invalidateQueries({
                 queryKey: apartmentKeys.all,
             });
             navigate(`/city/${cityId}`, { replace: true });
-        } catch (err) {
-            alert('Ошибка: ' + (err as Error).message);
-        } finally {
-            setSaving(false);
-        }
-    };
+        },
+    });
 
     return (
         <div className="min-h-screen bg-gray-100 pb-28">
-            <header className="px-5 pt-14 pb-4">
+            <header className="px-5 pt-safe pb-4">
                 <button
                     onClick={() => navigate(`/city/${cityId}`)}
                     className="mb-2 text-lg text-blue-500 active:opacity-60"
@@ -68,9 +67,10 @@ const AddApartmentPage = () => {
             </header>
 
             <ApartmentForm
-                saving={saving}
+                saving={saveMutation.isPending}
                 submitLabel="Сохранить"
-                onSubmit={handleSubmit}
+                saveError={humanError(saveMutation.error)}
+                onSubmit={saveMutation.mutate}
             />
         </div>
     );
