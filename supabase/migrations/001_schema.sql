@@ -13,8 +13,8 @@ create policy "anyone can read cities" on public.cities
   for select using (true);
 
 -- ── Квартиры ──
--- Приватные колонки (ownerName, whatsapp, mapUrl, comment) клиенту
--- не отдаются: для него есть витрина apartments_public ниже.
+-- Приватные колонки (ownerName, whatsapp, mapUrl, comment) клиенту не отдаются:
+-- для него есть витрина apartments_public ниже.
 -- В address пишется ТОЛЬКО район, точный адрес — ссылкой в mapUrl.
 create table public.apartments (
                                    id uuid primary key default gen_random_uuid(),
@@ -31,6 +31,7 @@ create table public.apartments (
                                    "installmentMonths" integer,
                                    "monthlyPayment" bigint,
                                    "mapUrl" text,
+                                   "videoUrl" text,
                                    "createdAt" timestamptz default now()
 );
 
@@ -41,34 +42,39 @@ alter table public.apartments enable row level security;
 -- ── Публичная витрина ──
 -- Вью принадлежит владельцу базы и читает таблицу в обход RLS. Именно поэтому
 -- анонимный клиент видит каталог, не имея никакого доступа к apartments.
+-- Здесь перечислено ровно то, что можно показывать клиенту: ни ownerName,
+-- ни whatsapp, ни mapUrl, ни comment в этот список не входят.
 -- Если на новой базе гость каталога не видит — проверь security_invoker у вью.
 create view public.apartments_public as
 select id, "cityId", address, price, "isSold", "dealType",
-       "downPayment", "installmentMonths", "monthlyPayment", photos, "createdAt"
+       "downPayment", "installmentMonths", "monthlyPayment", photos, "createdAt",
+       "videoUrl"
 from public.apartments;
 
 grant select on public.apartments_public to anon, authenticated;
 
--- ── Хранилище фото ──
--- Bucket публичный на чтение: ссылки из photos открываются у клиентов напрямую.
--- Политики на запись — в 002_roles.sql, они тоже зависят от is_staff().
-insert into storage.buckets (id, name, public)
-values ('apartment-photos', 'apartment-photos', true)
-    on conflict (id) do nothing;
-
--- ── Города клиента: подставить свои ──
--- Свои посмотри так: select * from public.cities;
-insert into public.cities (id, name) values
-                                         ('almaty', 'Алматы'),
-                                         ('astana', 'Астана')
-    on conflict (id) do nothing;
-
-
+-- ── Счётчики объектов по городам ──
+-- Нужны главной странице: без них она выкачивала бы весь каталог ради цифр.
+-- PostgREST не умеет GROUP BY, поэтому группирует база.
 create view public.city_apartment_counts as
 select "cityId", count(*)::int as total
 from public.apartments
 group by "cityId";
 
 grant select on public.city_apartment_counts to anon, authenticated;
+
+-- ── Хранилище фото ──
+-- Bucket публичный на чтение: ссылки из photos открываются у клиентов напрямую.
+-- Политики на запись — в 002_roles.sql, они зависят от is_staff().
+insert into storage.buckets (id, name, public)
+values ('apartment-photos', 'apartment-photos', true)
+    on conflict (id) do nothing;
+
+-- ── Города клиента: подставить свои ──
+insert into public.cities (id, name) values
+                                         ('almaty', 'Алматы'),
+                                         ('astana', 'Астана'),
+                                         ('shymkent', 'Шымкент')
+    on conflict (id) do nothing;
 
 notify pgrst, 'reload schema';

@@ -246,6 +246,17 @@ const ApartmentDetailPage = () => {
                     </>
                 )}
 
+                {apt.videoUrl && (
+                    <a
+                        href={apt.videoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-white py-3 font-semibold text-gray-900 shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-opacity active:opacity-70"
+                    >
+                        🎬 Смотреть видео
+                    </a>
+                )}
+
                 {/* Комментарий */}
             </div>
             {/* Полноэкранный просмотр */}

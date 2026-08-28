@@ -25,6 +25,11 @@ const mainFields: Field[] = [
         type: 'number',
         placeholder: '42000000',
     },
+    {
+        name: 'videoUrl',
+        label: 'Ссылка на видео в TikTok (видят клиенты)',
+        placeholder: 'https://vm.tiktok.com/...',
+    },
 ];
 
 const installmentFields: Field[] = [
@@ -56,6 +61,7 @@ const emptyForm: FormState = {
     monthlyPayment: '',
     isSold: false,
     comment: '',
+    videoUrl: '',
 };
 type Errors = Record<string, string>;
 
@@ -84,6 +90,10 @@ const validate = (form: FormState, dealType: DealType): Errors => {
     const mapUrl = String(form.mapUrl).trim();
     if (mapUrl && !/^https?:\/\//.test(mapUrl)) {
         errors.mapUrl = 'Ссылка должна начинаться с http';
+    }
+    const videoUrl = String(form.videoUrl).trim();
+    if (videoUrl && !/^https?:\/\//.test(videoUrl)) {
+        errors.videoUrl = 'Ссылка должна начинаться с http';
     }
 
     if (dealType === 'installment') {
@@ -119,6 +129,7 @@ const toFormState = (apt: Apartment): FormState => ({
         apt.monthlyPayment != null ? String(apt.monthlyPayment) : '',
     isSold: Boolean(apt.isSold),
     comment: apt.comment ?? '',
+    videoUrl: apt.videoUrl ?? '',
 });
 
 export type SubmitPayload = {

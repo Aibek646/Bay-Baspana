@@ -16,6 +16,7 @@ export type Apartment = {
     downPayment?: number;
     installmentMonths?: number;
     monthlyPayment?: number;
+    videoUrl?: string;
 
     // приватные — приходят только админу
     ownerName?: string;
