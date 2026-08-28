@@ -1,15 +1,16 @@
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import ApartmentForm, { type SubmitPayload } from '../components/ApartmentForm';
+import BackButton from '../components/BackButton.tsx';
+import ConfirmDialog from '../components/ConfirmDialog.tsx';
 import type { Apartment } from '../types';
 import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
 import { deletePhotos, uploadPhotos } from '../storage.ts';
 import { apartmentKeys } from '../queryKey.ts';
+import { formToApartment } from '../form.ts';
 import { humanError } from '../errors.ts';
-import { useState } from 'react';
-import ConfirmDialog from '../components/ConfirmDialog.tsx';
-import BackButton from '../components/BackButton.tsx';
 
 const EditApartmentPage = () => {
     const { id } = useParams();
@@ -19,6 +20,7 @@ const EditApartmentPage = () => {
     const { isStaff, isAdmin, loading: authLoading } = useAuth();
     const [confirmOpen, setConfirmOpen] = useState(false);
 
+    // чтение
     const aptQuery = useQuery({
         queryKey: apartmentKeys.detail('apartments', id),
         enabled: !authLoading && isStaff,
@@ -34,6 +36,7 @@ const EditApartmentPage = () => {
         },
     });
 
+    // запись
     const saveMutation = useMutation({
         mutationFn: async ({
             form,
@@ -44,7 +47,6 @@ const EditApartmentPage = () => {
             const current = aptQuery.data!;
 
             const newUrls = await uploadPhotos(files);
-            const isInstallment = dealType === 'installment';
 
             const photos = [
                 ...current.photos.filter((url) => !removedPhotos.includes(url)),
@@ -53,26 +55,7 @@ const EditApartmentPage = () => {
 
             const { error } = await supabase
                 .from('apartments')
-                .update({
-                    address: String(form.address),
-                    ownerName: String(form.ownerName),
-                    whatsapp: String(form.whatsapp),
-                    mapUrl: String(form.mapUrl) || null,
-                    price: Number(form.price),
-                    isSold: Boolean(form.isSold),
-                    comment: String(form.comment),
-                    dealType,
-                    downPayment: isInstallment
-                        ? Number(form.downPayment)
-                        : null,
-                    installmentMonths: isInstallment
-                        ? Number(form.installmentMonths)
-                        : null,
-                    monthlyPayment: isInstallment
-                        ? Number(form.monthlyPayment)
-                        : null,
-                    photos,
-                })
+                .update({ ...formToApartment(form, dealType), photos })
                 .eq('id', id);
 
             if (error) {
@@ -103,7 +86,8 @@ const EditApartmentPage = () => {
         mutationFn: async () => {
             const current = aptQuery.data!;
 
-            // Сначала строка в базе, потом файлы — почему именно так, см. ниже
+            // Сначала строка в базе, потом файлы: обрыв между шагами оставит
+            // невидимые файлы в Storage, а не квартиру с битыми картинками
             const { error } = await supabase
                 .from('apartments')
                 .delete()
@@ -173,6 +157,7 @@ const EditApartmentPage = () => {
                 saveError={humanError(saveMutation.error)}
                 onSubmit={saveMutation.mutate}
             />
+
             {isAdmin && (
                 <div className="mt-8 px-5">
                     <button
@@ -184,11 +169,13 @@ const EditApartmentPage = () => {
                             ? 'Удаляем…'
                             : 'Удалить квартиру'}
                     </button>
+
                     {deleteMutation.isError && (
                         <p className="mt-2 text-sm text-red-600">
                             {humanError(deleteMutation.error)}
                         </p>
                     )}
+
                     {confirmOpen && (
                         <ConfirmDialog
                             title="Удалить квартиру?"

@@ -8,16 +8,31 @@ const mainFields: Field[] = [
         label: 'Район / расположение (видят клиенты)',
         placeholder: 'мкр. Самал-2',
     },
-    { name: 'ownerName', label: '🔒 Имя хозяина', placeholder: 'Асхат' },
     {
-        name: 'whatsapp',
-        label: '🔒 WhatsApp хозяина',
-        placeholder: '+7 701 234 5678',
+        name: 'rooms',
+        label: 'Комнат (0 — студия)',
+        type: 'number',
+        placeholder: '2',
     },
     {
-        name: 'mapUrl',
-        label: '🔒 Точный адрес — ссылка на карту',
-        placeholder: 'https://2gis.kz/almaty/...',
+        name: 'area',
+        label: 'Площадь, м²',
+        type: 'number',
+        step: '0.1',
+        placeholder: '62.5',
+    },
+    { name: 'floor', label: 'Этаж', type: 'number', placeholder: '3' },
+    {
+        name: 'floorsTotal',
+        label: 'Этажей в доме',
+        type: 'number',
+        placeholder: '9',
+    },
+    {
+        name: 'builtYear',
+        label: 'Год постройки',
+        type: 'number',
+        placeholder: '2019',
     },
     {
         name: 'price',
@@ -29,6 +44,18 @@ const mainFields: Field[] = [
         name: 'videoUrl',
         label: 'Ссылка на видео в TikTok (видят клиенты)',
         placeholder: 'https://vm.tiktok.com/...',
+    },
+    { name: 'ownerName', label: '🔒 Имя хозяина', placeholder: 'Асхат' },
+    {
+        name: 'whatsapp',
+        label: '🔒 WhatsApp хозяина',
+        placeholder: '+7 701 234 5678',
+    },
+    { name: 'complex', label: '🔒 ЖК', placeholder: 'ЖК Асыл Тау' },
+    {
+        name: 'mapUrl',
+        label: '🔒 Точный адрес — ссылка на карту',
+        placeholder: 'https://2gis.kz/almaty/...',
     },
 ];
 
@@ -62,6 +89,12 @@ const emptyForm: FormState = {
     isSold: false,
     comment: '',
     videoUrl: '',
+    rooms: '',
+    area: '',
+    floor: '',
+    floorsTotal: '',
+    builtYear: '',
+    complex: '',
 };
 type Errors = Record<string, string>;
 
@@ -112,6 +145,53 @@ const validate = (form: FormState, dealType: DealType): Errors => {
         }
     }
 
+    const optionalNumber = (name: string) => {
+        const raw = String(form[name]).trim();
+        return raw === '' ? null : Number(raw);
+    };
+
+    const rooms = optionalNumber('rooms');
+    if (
+        rooms !== null &&
+        (!Number.isInteger(rooms) || rooms < 0 || rooms > 20)
+    ) {
+        errors.rooms = 'Целое число от 0 до 20';
+    }
+
+    const area = optionalNumber('area');
+    if (area !== null && (!Number.isFinite(area) || area <= 0 || area > 1000)) {
+        errors.area = 'Площадь от 1 до 1000 м²';
+    }
+
+    const floorsTotal = optionalNumber('floorsTotal');
+    if (
+        floorsTotal !== null &&
+        (!Number.isInteger(floorsTotal) || floorsTotal < 1 || floorsTotal > 200)
+    ) {
+        errors.floorsTotal = 'Целое число от 1 до 200';
+    }
+
+    const floor = optionalNumber('floor');
+    if (
+        floor !== null &&
+        (!Number.isInteger(floor) || floor < 1 || floor > 200)
+    ) {
+        errors.floor = 'Целое число от 1 до 200';
+    } else if (floor !== null && floorsTotal !== null && floor > floorsTotal) {
+        errors.floor = 'Этаж не может быть больше этажности';
+    }
+
+    const builtYear = optionalNumber('builtYear');
+    const maxYear = new Date().getFullYear() + 5;
+    if (
+        builtYear !== null &&
+        (!Number.isInteger(builtYear) ||
+            builtYear < 1900 ||
+            builtYear > maxYear)
+    ) {
+        errors.builtYear = `Год от 1900 до ${maxYear}`;
+    }
+
     return errors;
 };
 
@@ -130,6 +210,12 @@ const toFormState = (apt: Apartment): FormState => ({
     isSold: Boolean(apt.isSold),
     comment: apt.comment ?? '',
     videoUrl: apt.videoUrl ?? '',
+    rooms: apt.rooms != null ? String(apt.rooms) : '',
+    area: apt.area != null ? String(apt.area) : '',
+    floor: apt.floor != null ? String(apt.floor) : '',
+    floorsTotal: apt.floorsTotal != null ? String(apt.floorsTotal) : '',
+    builtYear: apt.builtYear != null ? String(apt.builtYear) : '',
+    complex: apt.complex ?? '',
 });
 
 export type SubmitPayload = {

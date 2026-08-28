@@ -18,9 +18,16 @@ export type Apartment = {
     monthlyPayment?: number;
     videoUrl?: string;
 
-    // приватные — приходят только админу
+    rooms?: number;
+    area?: number;
+    floor?: number;
+    floorsTotal?: number;
+    builtYear?: number;
+
+    // приватные — приходят только сотрудникам
     ownerName?: string;
     whatsapp?: string;
     mapUrl?: string;
     comment?: string;
+    complex?: string;
 };

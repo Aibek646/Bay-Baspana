@@ -78,3 +78,20 @@ insert into public.cities (id, name) values
     on conflict (id) do nothing;
 
 notify pgrst, 'reload schema';
+
+alter table public.apartments
+    add column rooms smallint,
+  add column area numeric(6, 1),
+  add column floor smallint,
+  add column "floorsTotal" smallint,
+  add column "builtYear" smallint,
+  add column complex text;
+
+create or replace view public.apartments_public as
+select id, "cityId", address, price, "isSold", "dealType",
+       "downPayment", "installmentMonths", "monthlyPayment", photos, "createdAt",
+       "videoUrl",
+       rooms, area, floor, "floorsTotal", "builtYear"
+from public.apartments;
+
+notify pgrst, 'reload schema';

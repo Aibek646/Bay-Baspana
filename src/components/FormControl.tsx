@@ -5,6 +5,7 @@ export type Field = {
     label?: string;
     placeholder?: string;
     type?: FieldType;
+    step?: string;
     options?: { value: string; label: string }[];
 };
 
@@ -21,7 +22,7 @@ const inputClass = (hasError: boolean) =>
     }`;
 
 const FormControl = ({ field, value, onChange, error }: FormControlProps) => {
-    const { name, label, type = 'text', placeholder, options } = field;
+    const { name, label, type = 'text', placeholder, step, options } = field;
 
     const id = `id-${name}-${type}`;
 
@@ -51,6 +52,7 @@ const FormControl = ({ field, value, onChange, error }: FormControlProps) => {
             <input
                 id={id}
                 type={type}
+                step={step}
                 placeholder={placeholder}
                 value={String(value ?? '')}
                 onChange={(e) => onChange(e.target.value)}

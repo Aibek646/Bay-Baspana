@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import ApartmentForm, { type SubmitPayload } from '../components/ApartmentForm';
-import { supabase } from '../supabase.ts';
 import { deletePhotos, uploadPhotos } from '../storage.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import { humanError } from '../errors.ts';
 import BackButton from '../components/BackButton.tsx';
+import { formToApartment } from '../form.ts';
+import { supabase } from '../supabase.ts';
 
 const AddApartmentPage = () => {
     const { cityId } = useParams();
@@ -18,22 +19,8 @@ const AddApartmentPage = () => {
             const isInstallment = dealType === 'installment';
 
             const { error } = await supabase.from('apartments').insert({
+                ...formToApartment(form, dealType),
                 cityId,
-                address: String(form.address),
-                ownerName: String(form.ownerName),
-                whatsapp: String(form.whatsapp),
-                mapUrl: String(form.mapUrl) || null,
-                price: Number(form.price),
-                isSold: Boolean(form.isSold),
-                comment: String(form.comment),
-                dealType,
-                downPayment: isInstallment ? Number(form.downPayment) : null,
-                installmentMonths: isInstallment
-                    ? Number(form.installmentMonths)
-                    : null,
-                monthlyPayment: isInstallment
-                    ? Number(form.monthlyPayment)
-                    : null,
                 photos,
             });
 
