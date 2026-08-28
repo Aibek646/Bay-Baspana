@@ -11,8 +11,8 @@ export default defineConfig({
             registerType: 'autoUpdate',
             includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
             manifest: {
-                name: 'SABIT BASPANA',
-                short_name: 'SABIT',
+                name: 'BAY BASPANA',
+                short_name: 'BAY',
                 description: 'Каталог квартир',
                 lang: 'ru',
                 start_url: '/',
