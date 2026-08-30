@@ -168,12 +168,13 @@ const ApartmentsPage = () => {
                                     <div className="text-ink font-semibold">
                                         {apt.address}
                                     </div>
-                                    {/* «В продаже» не рисуем: это состояние
-                                        по умолчанию, бейдж на каждой карточке
-                                        превращается в шум */}
-                                    {apt.isSold && (
+                                    {apt.isSold ? (
                                         <span className="bg-line text-muted shrink-0 rounded-full px-2.5 py-1 text-xs font-medium">
                                             Продано
+                                        </span>
+                                    ) : (
+                                        <span className="shrink-0 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700 dark:bg-green-950 dark:text-green-300">
+                                            В продаже
                                         </span>
                                     )}
                                 </div>
