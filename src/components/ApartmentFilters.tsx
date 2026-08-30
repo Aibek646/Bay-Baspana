@@ -59,120 +59,140 @@ const ApartmentFilters = ({
                 </button>
             </div>
 
-            {open && (
-                <div className="bg-surface space-y-4 rounded-2xl p-4 shadow-[0_4px_14px_rgba(0,0,0,0.06)]">
-                    <div>
-                        <div className="text-muted mb-2 text-sm">
-                            Тип объекта
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                            <button
-                                type="button"
-                                onClick={() => set('propertyType', 'all')}
-                                className={chipClass(
-                                    value.propertyType === 'all'
-                                )}
-                            >
-                                Все
-                            </button>
-                            {PROPERTY_TYPES.map((item) => (
+            {/* grid-rows 0fr → 1fr — приём для плавной анимации высоты:
+                обычный height: auto анимировать нельзя */}
+            <div
+                className="overflow-hidden transition-all duration-300 ease-out"
+                style={{
+                    maxHeight: open ? '40rem' : 0,
+                    opacity: open ? 1 : 0,
+                }}
+            >
+                <div>
+                    <div className="bg-surface space-y-4 rounded-2xl p-4 shadow-[0_4px_14px_rgba(0,0,0,0.06)]">
+                        <div>
+                            <div className="text-muted mb-2 text-sm">
+                                Тип объекта
+                            </div>
+                            <div className="flex flex-wrap gap-2">
                                 <button
-                                    key={item.value}
                                     type="button"
-                                    onClick={() =>
-                                        set('propertyType', item.value)
-                                    }
+                                    onClick={() => set('propertyType', 'all')}
                                     className={chipClass(
-                                        value.propertyType === item.value
+                                        value.propertyType === 'all'
                                     )}
                                 >
-                                    {item.label}
+                                    Все
                                 </button>
-                            ))}
+                                {PROPERTY_TYPES.map((item) => (
+                                    <button
+                                        key={item.value}
+                                        type="button"
+                                        onClick={() =>
+                                            set('propertyType', item.value)
+                                        }
+                                        className={chipClass(
+                                            value.propertyType === item.value
+                                        )}
+                                    >
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <div className="text-muted mb-2 text-sm">Комнат</div>
-                        <div className="flex flex-wrap gap-2">
-                            <button
-                                type="button"
-                                onClick={() => set('rooms', null)}
-                                className={chipClass(value.rooms === null)}
-                            >
-                                Любое
-                            </button>
-                            {ROOM_OPTIONS.map((rooms) => (
+                        <div>
+                            <div className="text-muted mb-2 text-sm">
+                                Комнат
+                            </div>
+                            <div className="flex flex-wrap gap-2">
                                 <button
-                                    key={rooms}
                                     type="button"
-                                    onClick={() => set('rooms', rooms)}
-                                    className={chipClass(value.rooms === rooms)}
+                                    onClick={() => set('rooms', null)}
+                                    className={chipClass(value.rooms === null)}
                                 >
-                                    {rooms === 4 ? '4+' : rooms}
+                                    Любое
                                 </button>
-                            ))}
+                                {ROOM_OPTIONS.map((rooms) => (
+                                    <button
+                                        key={rooms}
+                                        type="button"
+                                        onClick={() => set('rooms', rooms)}
+                                        className={chipClass(
+                                            value.rooms === rooms
+                                        )}
+                                    >
+                                        {rooms === 4 ? '4+' : rooms}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                    <div>
-                        <div className="text-muted mb-2 text-sm">Цена, ₸</div>
-                        <div className="flex gap-2">
-                            <input
-                                type="number"
-                                value={value.priceFrom}
-                                onChange={(e) =>
-                                    set('priceFrom', e.target.value)
-                                }
-                                placeholder="от"
-                                className={inputClass}
-                            />
-                            <input
-                                type="number"
-                                value={value.priceTo}
-                                onChange={(e) => set('priceTo', e.target.value)}
-                                placeholder="до"
-                                className={inputClass}
-                            />
+                        <div>
+                            <div className="text-muted mb-2 text-sm">
+                                Цена, ₸
+                            </div>
+                            <div className="flex gap-2">
+                                <input
+                                    type="number"
+                                    value={value.priceFrom}
+                                    onChange={(e) =>
+                                        set('priceFrom', e.target.value)
+                                    }
+                                    placeholder="от"
+                                    className={inputClass}
+                                />
+                                <input
+                                    type="number"
+                                    value={value.priceTo}
+                                    onChange={(e) =>
+                                        set('priceTo', e.target.value)
+                                    }
+                                    placeholder="до"
+                                    className={inputClass}
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <label className="bg-ground flex items-center justify-between rounded-xl p-3">
-                        <span className="text-ink">Скрыть проданные</span>
-                        <input
-                            type="checkbox"
-                            checked={value.hideSold}
-                            onChange={(e) => set('hideSold', e.target.checked)}
-                            className="h-5 w-5"
-                        />
-                    </label>
-
-                    {/* архив — инструмент сотрудника, клиенту не показываем */}
-                    {canSeeArchive && (
                         <label className="bg-ground flex items-center justify-between rounded-xl p-3">
-                            <span className="text-ink">Показать архив</span>
+                            <span className="text-ink">Скрыть проданные</span>
                             <input
                                 type="checkbox"
-                                checked={value.showArchive}
+                                checked={value.hideSold}
                                 onChange={(e) =>
-                                    set('showArchive', e.target.checked)
+                                    set('hideSold', e.target.checked)
                                 }
                                 className="h-5 w-5"
                             />
                         </label>
-                    )}
 
-                    {count > 0 && (
-                        <button
-                            type="button"
-                            onClick={() => onChange(emptyFilters)}
-                            className="bg-ground w-full rounded-xl py-2.5 text-sm font-medium text-blue-600 transition-opacity active:opacity-70 dark:text-blue-400"
-                        >
-                            Сбросить фильтры
-                        </button>
-                    )}
+                        {/* архив — инструмент сотрудника, клиенту не показываем */}
+                        {canSeeArchive && (
+                            <label className="bg-ground flex items-center justify-between rounded-xl p-3">
+                                <span className="text-ink">Показать архив</span>
+                                <input
+                                    type="checkbox"
+                                    checked={value.showArchive}
+                                    onChange={(e) =>
+                                        set('showArchive', e.target.checked)
+                                    }
+                                    className="h-5 w-5"
+                                />
+                            </label>
+                        )}
+
+                        {count > 0 && (
+                            <button
+                                type="button"
+                                onClick={() => onChange(emptyFilters)}
+                                className="bg-ground w-full rounded-xl py-2.5 text-sm font-medium text-blue-600 transition-opacity active:opacity-70 dark:text-blue-400"
+                            >
+                                Сбросить фильтры
+                            </button>
+                        )}
+                    </div>
                 </div>
-            )}
+            </div>
         </div>
     );
 };

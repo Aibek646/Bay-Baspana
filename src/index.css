@@ -96,3 +96,25 @@ button:active,
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.02em;
 }
+
+/* Появление плавающих кнопок: чуть меньше и ниже — затем на место */
+@keyframes pop-in {
+    from {
+        opacity: 0;
+        transform: scale(0.85) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@utility animate-pop {
+    animation: pop-in 240ms cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .animate-pop {
+        animation: none;
+    }
+}

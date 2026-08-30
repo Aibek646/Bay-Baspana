@@ -392,7 +392,7 @@ const ApartmentDetailPage = () => {
                 <button
                     onClick={() => navigate(`/apartment/${apt.id}/edit`)}
                     aria-label="Изменить"
-                    className="btn-accent bottom-safe fixed right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full"
+                    className="animate-pop btn-accent bottom-safe fixed right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full"
                 >
                     <svg
                         viewBox="0 0 24 24"

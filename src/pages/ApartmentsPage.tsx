@@ -250,7 +250,7 @@ const ApartmentsPage = () => {
             {isStaff && (
                 <button
                     onClick={() => navigate(`/city/${cityId}/add`)}
-                    className="btn-accent bottom-safe fixed right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full text-3xl"
+                    className="animate-pop btn-accent bottom-safe fixed right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full text-3xl"
                 >
                     +
                 </button>
