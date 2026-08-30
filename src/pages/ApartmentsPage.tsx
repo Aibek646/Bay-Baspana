@@ -13,7 +13,11 @@ import {
     formatPrice,
     formatRoomsShort,
 } from '../format.ts';
-import { propertyTypeEmoji, propertyTypeLabel } from '../property.ts';
+import {
+    propertyTypeChip,
+    propertyTypeEmoji,
+    propertyTypeLabel,
+} from '../property.ts';
 import { isNew } from '../dates.ts';
 import ApartmentFilters from '../components/ApartmentFilters.tsx';
 import { applyFilters, emptyFilters, type Filters } from '../filters.ts';
@@ -104,7 +108,6 @@ const ApartmentsPage = () => {
                     // «Дом · 4 комн. · 180 м² · 6 соток · 2 эт.»
                     const parts: string[] = [];
 
-                    parts.push(propertyTypeLabel(apt.propertyType));
                     if (apt.rooms != null) {
                         parts.push(formatRoomsShort(apt.rooms));
                     }
@@ -175,11 +178,19 @@ const ApartmentsPage = () => {
                                     )}
                                 </div>
 
-                                {specsLine && (
-                                    <div className="mt-0.5 text-sm text-gray-500">
-                                        {specsLine}
-                                    </div>
-                                )}
+                                <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                                    <span
+                                        className={`rounded-full px-2 py-0.5 text-xs font-medium ${propertyTypeChip[apt.propertyType]}`}
+                                    >
+                                        {propertyTypeLabel(apt.propertyType)}
+                                    </span>
+
+                                    {specsLine && (
+                                        <span className="text-sm text-gray-500">
+                                            {specsLine}
+                                        </span>
+                                    )}
+                                </div>
 
                                 <div className="mt-1 text-lg font-bold text-gray-900">
                                     {formatPrice(apt.price)}

@@ -12,7 +12,11 @@ import {
     formatPrice,
     formatRooms,
 } from '../format.ts';
-import { propertyTypeEmoji, propertyTypeLabel } from '../property.ts';
+import {
+    propertyTypeChip,
+    propertyTypeEmoji,
+    propertyTypeLabel,
+} from '../property.ts';
 import { isNew } from '../dates.ts';
 
 const ApartmentDetailPage = () => {
@@ -223,7 +227,9 @@ const ApartmentDetailPage = () => {
                         </span>
                     )}
 
-                    <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
+                    <span
+                        className={`rounded-full px-3 py-1 text-sm font-medium ${propertyTypeChip[apt.propertyType]}`}
+                    >
                         {propertyTypeLabel(apt.propertyType)}
                     </span>
                 </div>
