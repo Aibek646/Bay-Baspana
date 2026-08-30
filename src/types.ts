@@ -20,6 +20,7 @@ export type Apartment = {
     monthlyPayment?: number;
     videoUrl?: string;
     createdAt?: string;
+    soldAt?: string;
     propertyType: PropertyType;
     landArea?: number;
 

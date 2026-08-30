@@ -57,7 +57,7 @@ const EditApartmentPage = () => {
             const { error } = await supabase
                 .from('apartments')
                 .update({
-                    ...formToApartment(form, dealType, propertyType),
+                    ...formToApartment(form, dealType, propertyType, current),
                     photos,
                 })
                 .eq('id', id);

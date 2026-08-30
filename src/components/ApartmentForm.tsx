@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ConfirmDialog from './ConfirmDialog';
 import FormControl, { type Field } from './FormControl';
 import type { Apartment, DealType, PropertyType } from '../types';
 import { isFieldVisible, PROPERTY_TYPES } from '../property.ts';
@@ -312,6 +313,7 @@ const ApartmentForm = ({
         (url) => !removedPhotos.includes(url)
     );
     const [errors, setErrors] = useState<Errors>({});
+    const [confirmSold, setConfirmSold] = useState(false);
 
     const [propertyType, setPropertyType] = useState<PropertyType>(
         initial?.propertyType ?? 'apartment'
@@ -339,6 +341,13 @@ const ApartmentForm = ({
     };
 
     const setField = (name: string, value: string | boolean) => {
+        // отметка «продано» с последствиями: через три дня объект уйдёт
+        // из списка, поэтому переспрашиваем
+        if (name === 'isSold' && value === true) {
+            setConfirmSold(true);
+            return;
+        }
+
         setForm((prev) => ({ ...prev, [name]: value }));
 
         setErrors((prev) => {
@@ -523,6 +532,19 @@ const ApartmentForm = ({
                 <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/40 dark:text-red-400">
                     {saveError}
                 </p>
+            )}
+
+            {confirmSold && (
+                <ConfirmDialog
+                    title="Точно продано?"
+                    message="Объект получит серую метку «Продано», а через три дня пропадёт из списка. Найти его можно будет через «Показать архив»."
+                    confirmLabel="Да, продано"
+                    onConfirm={() => {
+                        setForm((prev) => ({ ...prev, isSold: true }));
+                        setConfirmSold(false);
+                    }}
+                    onCancel={() => setConfirmSold(false)}
+                />
             )}
 
             <button

@@ -142,6 +142,18 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
                         />
                     </label>
 
+                    <label className="bg-ground flex items-center justify-between rounded-xl p-3">
+                        <span className="text-ink">Показать архив</span>
+                        <input
+                            type="checkbox"
+                            checked={value.showArchive}
+                            onChange={(e) =>
+                                set('showArchive', e.target.checked)
+                            }
+                            className="h-5 w-5"
+                        />
+                    </label>
+
                     {count > 0 && (
                         <button
                             type="button"

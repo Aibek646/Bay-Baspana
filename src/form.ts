@@ -1,5 +1,5 @@
 import type { FormState } from './components/ApartmentForm';
-import type { DealType, PropertyType } from './types';
+import type { Apartment, DealType, PropertyType } from './types';
 import { isFieldVisible } from './property';
 
 // '' → null, иначе число. Пустое поле в базе должно быть null, а не 0
@@ -16,7 +16,8 @@ const textOrNull = (value: string | boolean) => String(value).trim() || null;
 export const formToApartment = (
     form: FormState,
     dealType: DealType,
-    propertyType: PropertyType
+    propertyType: PropertyType,
+    current?: Apartment
 ) => {
     const isInstallment = dealType === 'installment';
     const visible = (name: string) => isFieldVisible(propertyType, name);
@@ -31,6 +32,11 @@ export const formToApartment = (
         address: String(form.address).trim(),
         price: Number(form.price),
         isSold: Boolean(form.isSold),
+        // отметили продано — ставим дату; сняли отметку — убираем.
+        // от этой даты отсчитывается уход объекта в архив
+        soldAt: form.isSold
+            ? (current?.soldAt ?? new Date().toISOString())
+            : null,
         dealType,
 
         rooms: numIfVisible('rooms'),

@@ -1,4 +1,5 @@
-import type { Apartment, PropertyType } from './types';
+import type { Apartment, PropertyType } from './types.ts';
+import { isArchived } from './dates.ts';
 
 export type Filters = {
     query: string;
@@ -7,6 +8,7 @@ export type Filters = {
     priceFrom: string;
     priceTo: string;
     hideSold: boolean;
+    showArchive: boolean;
 };
 
 export const emptyFilters: Filters = {
@@ -16,6 +18,7 @@ export const emptyFilters: Filters = {
     priceFrom: '',
     priceTo: '',
     hideSold: false,
+    showArchive: false,
 };
 
 // сколько фильтров включено — показываем числом на кнопке
@@ -27,6 +30,7 @@ export const activeCount = (filters: Filters) =>
         filters.priceFrom.trim() !== '',
         filters.priceTo.trim() !== '',
         filters.hideSold,
+        filters.showArchive,
     ].filter(Boolean).length;
 
 export const applyFilters = (list: Apartment[], filters: Filters) => {
@@ -37,6 +41,11 @@ export const applyFilters = (list: Apartment[], filters: Filters) => {
 
     return list.filter((apt) => {
         if (filters.hideSold && apt.isSold) return false;
+
+        // проданное старше трёх дней уходит из списка, но не из базы
+        if (!filters.showArchive && isArchived(apt.isSold, apt.soldAt)) {
+            return false;
+        }
 
         if (
             filters.propertyType !== 'all' &&
