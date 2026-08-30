@@ -16,6 +16,7 @@ const TYPE_DEPENDENT = [
     'floorsTotal',
     'builtYear',
     'complex',
+    'material',
 ];
 
 const fieldsByType: Record<PropertyType, string[]> = {
@@ -27,7 +28,14 @@ const fieldsByType: Record<PropertyType, string[]> = {
         'builtYear',
         'complex',
     ],
-    house: ['rooms', 'area', 'landArea', 'floorsTotal', 'builtYear'],
+    house: [
+        'rooms',
+        'area',
+        'landArea',
+        'material',
+        'floorsTotal',
+        'builtYear',
+    ],
     commercial: ['area', 'floor', 'floorsTotal', 'builtYear', 'complex'],
 };
 

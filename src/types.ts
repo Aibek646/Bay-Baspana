@@ -23,6 +23,7 @@ export type Apartment = {
     soldAt?: string;
     propertyType: PropertyType;
     landArea?: number;
+    material?: string;
 
     rooms?: number;
     area?: number;

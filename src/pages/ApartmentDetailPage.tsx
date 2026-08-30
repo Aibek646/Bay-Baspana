@@ -144,6 +144,9 @@ const ApartmentDetailPage = () => {
                     : String(apt.floor),
         });
     }
+    if (apt.material) {
+        specs.push({ label: 'Материал', value: apt.material });
+    }
     if (apt.builtYear != null) {
         specs.push({ label: 'Год постройки', value: String(apt.builtYear) });
     }

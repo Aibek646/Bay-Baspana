@@ -30,6 +30,11 @@ const mainFields: Field[] = [
         step: '0.1',
         placeholder: '6',
     },
+    {
+        name: 'material',
+        label: 'Из чего построен',
+        placeholder: 'кирпич, сплинтер, камыш',
+    },
     { name: 'floor', label: 'Этаж', type: 'number', placeholder: '3' },
     {
         name: 'floorsTotal',
@@ -111,6 +116,7 @@ const emptyForm: FormState = {
     builtYear: '',
     complex: '',
     landArea: '',
+    material: '',
 };
 type Errors = Record<string, string>;
 
@@ -272,6 +278,7 @@ const toFormState = (apt: Apartment): FormState => ({
     builtYear: apt.builtYear != null ? String(apt.builtYear) : '',
     complex: apt.complex ?? '',
     landArea: apt.landArea != null ? String(apt.landArea) : '',
+    material: apt.material ?? '',
 });
 
 export type SubmitPayload = {

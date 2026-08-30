@@ -27,6 +27,9 @@ export const formToApartment = (
     const numIfVisible = (name: string) =>
         visible(name) ? numOrNull(form[name]) : null;
 
+    const textIfVisible = (name: string) =>
+        visible(name) ? textOrNull(form[name]) : null;
+
     return {
         propertyType,
         address: String(form.address).trim(),
@@ -45,6 +48,7 @@ export const formToApartment = (
         floor: numIfVisible('floor'),
         floorsTotal: numIfVisible('floorsTotal'),
         builtYear: numIfVisible('builtYear'),
+        material: textIfVisible('material'),
         videoUrl: textOrNull(form.videoUrl),
 
         downPayment: isInstallment ? numOrNull(form.downPayment) : null,
@@ -55,7 +59,7 @@ export const formToApartment = (
 
         ownerName: textOrNull(form.ownerName),
         whatsapp: textOrNull(form.whatsapp),
-        complex: visible('complex') ? textOrNull(form.complex) : null,
+        complex: textIfVisible('complex'),
         mapUrl: textOrNull(form.mapUrl),
         yandexUrl: textOrNull(form.yandexUrl),
         comment: textOrNull(form.comment),
