@@ -221,12 +221,9 @@ const ApartmentDetailPage = () => {
                         </span>
                     )}
 
-                    {/* квартиру не помечаем — их большинство */}
-                    {apt.propertyType !== 'apartment' && (
-                        <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
-                            {propertyTypeLabel(apt.propertyType)}
-                        </span>
-                    )}
+                    <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
+                        {propertyTypeLabel(apt.propertyType)}
+                    </span>
                 </div>
 
                 <h1 className="mt-3 text-2xl font-bold text-gray-900">

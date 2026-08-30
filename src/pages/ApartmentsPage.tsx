@@ -103,9 +103,7 @@ const ApartmentsPage = () => {
                     // «Дом · 4 комн. · 180 м² · 6 соток · 2 эт.»
                     const parts: string[] = [];
 
-                    if (apt.propertyType !== 'apartment') {
-                        parts.push(propertyTypeLabel(apt.propertyType));
-                    }
+                    parts.push(propertyTypeLabel(apt.propertyType));
                     if (apt.rooms != null) {
                         parts.push(formatRoomsShort(apt.rooms));
                     }
