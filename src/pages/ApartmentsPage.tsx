@@ -80,12 +80,12 @@ const ApartmentsPage = () => {
     return (
         <div className="min-h-screen bg-gray-100">
             <header className="pt-safe px-5 pb-4">
-                <div className="mb-3">
+                <div className="flex items-center gap-3">
                     <BackButton to="/" />
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        {city?.name}
+                    </h1>
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                    {city?.name}
-                </h1>
                 <p className="mt-1 text-gray-500">
                     {visible.length === list.length
                         ? formatObjects(list.length)
@@ -159,13 +159,12 @@ const ApartmentsPage = () => {
                                     <div className="font-semibold text-gray-900">
                                         {apt.address}
                                     </div>
-                                    {apt.isSold ? (
+                                    {/* «В продаже» не рисуем: это состояние
+                                        по умолчанию, бейдж на каждой карточке
+                                        превращается в шум */}
+                                    {apt.isSold && (
                                         <span className="shrink-0 rounded-full bg-gray-200 px-2.5 py-1 text-xs font-medium text-gray-600">
                                             Продано
-                                        </span>
-                                    ) : (
-                                        <span className="shrink-0 rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
-                                            В продаже
                                         </span>
                                     )}
                                 </div>

@@ -47,12 +47,12 @@ const AddApartmentPage = () => {
     return (
         <div className="min-h-screen bg-gray-100 pb-28">
             <header className="pt-safe px-5 pb-4">
-                <div className="mb-3">
+                <div className="flex items-center gap-3">
                     <BackButton to={`/city/${cityId}`} />
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Новая квартира
+                    </h1>
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                    Новая квартира
-                </h1>
             </header>
 
             <ApartmentForm

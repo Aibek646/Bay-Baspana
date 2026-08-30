@@ -146,12 +146,12 @@ const EditApartmentPage = () => {
     return (
         <div className="min-h-screen bg-gray-100 pb-28">
             <header className="pt-safe px-5 pb-4">
-                <div className="mb-3">
+                <div className="flex items-center gap-3">
                     <BackButton to={`/apartment/${id}`} />
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Изменить квартиру
+                    </h1>
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900">
-                    Изменить квартиру
-                </h1>
             </header>
 
             <ApartmentForm
