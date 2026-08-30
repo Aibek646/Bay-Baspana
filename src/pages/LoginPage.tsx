@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { supabase } from '../supabase.ts';
 
 const inputClass =
-    'w-full rounded-xl border border-gray-200 bg-white p-3 text-gray-900 outline-none focus:border-blue-400';
+    'w-full rounded-xl border border-line bg-surface p-3 text-ink outline-none focus:border-blue-400';
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -57,9 +57,9 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 px-5 pt-24">
-            <h1 className="text-3xl font-bold text-gray-900">Вход</h1>
-            <p className="mt-1 mb-6 text-gray-500">Только для сотрудников</p>
+        <div className="bg-ground min-h-screen px-5 pt-24">
+            <h1 className="text-ink text-3xl font-bold">Вход</h1>
+            <p className="text-muted mt-1 mb-6">Только для сотрудников</p>
 
             <div className="space-y-4">
                 <input
@@ -77,7 +77,11 @@ const LoginPage = () => {
                     className={inputClass}
                 />
 
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                {error && (
+                    <p className="text-sm text-red-500 dark:text-red-400">
+                        {error}
+                    </p>
+                )}
 
                 <button
                     onClick={handleLogin}
@@ -89,13 +93,13 @@ const LoginPage = () => {
 
                 <button
                     onClick={() => navigate('/')}
-                    className="w-full rounded-xl bg-gray-200 py-3 font-medium text-gray-700 active:opacity-70"
+                    className="bg-line text-ink w-full rounded-xl py-3 font-medium active:opacity-70"
                 >
                     Назад к объектам
                 </button>
 
                 {sent ? (
-                    <p className="text-center text-sm text-green-700">
+                    <p className="text-center text-sm text-green-700 dark:text-green-400">
                         Письмо отправлено. Откройте ссылку из него на этом же
                         телефоне.
                     </p>
@@ -103,7 +107,7 @@ const LoginPage = () => {
                     <button
                         onClick={handleReset}
                         disabled={loading}
-                        className="w-full py-2 text-sm font-medium text-blue-600 active:opacity-70 disabled:opacity-50"
+                        className="w-full py-2 text-sm font-medium text-blue-600 active:opacity-70 disabled:opacity-50 dark:text-blue-400"
                     >
                         Забыли пароль?
                     </button>

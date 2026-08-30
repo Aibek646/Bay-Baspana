@@ -370,7 +370,7 @@ const ApartmentForm = ({
     return (
         <div className="space-y-4 px-5">
             <div>
-                <label className="mb-1 block text-sm text-gray-500">
+                <label className="text-muted mb-1 block text-sm">
                     Тип объекта
                 </label>
                 <div className="flex gap-2">
@@ -382,7 +382,7 @@ const ApartmentForm = ({
                             className={`flex-1 rounded-xl p-3 text-sm font-medium ${
                                 propertyType === item.value
                                     ? 'bg-blue-500 text-white'
-                                    : 'bg-white text-gray-700'
+                                    : 'bg-surface text-ink'
                             }`}
                         >
                             {item.label}
@@ -396,14 +396,14 @@ const ApartmentForm = ({
             {/* Уже загруженные фото — при редактировании */}
             {existingPhotos.length > 0 && (
                 <div>
-                    <label className="mb-1 block text-sm text-gray-500">
+                    <label className="text-muted mb-1 block text-sm">
                         Загруженные фото
                     </label>
                     <div className="grid grid-cols-3 gap-2">
                         {existingPhotos.map((url) => (
                             <div
                                 key={url}
-                                className="relative aspect-square overflow-hidden rounded-xl bg-gray-200"
+                                className="bg-line relative aspect-square overflow-hidden rounded-xl"
                             >
                                 <img
                                     src={url}
@@ -427,7 +427,7 @@ const ApartmentForm = ({
                     </div>
 
                     {removedPhotos.length > 0 && (
-                        <p className="mt-1 text-xs text-gray-500">
+                        <p className="text-muted mt-1 text-xs">
                             {removedPhotos.length} фото удалим после сохранения
                         </p>
                     )}
@@ -436,7 +436,7 @@ const ApartmentForm = ({
 
             {/* Новые фото */}
             <div>
-                <label className="mb-1 block text-sm text-gray-500">
+                <label className="text-muted mb-1 block text-sm">
                     {initial ? 'Добавить фото' : 'Фото'}
                 </label>
 
@@ -444,7 +444,7 @@ const ApartmentForm = ({
                     {previews.map((src, index) => (
                         <div
                             key={src}
-                            className="relative aspect-square overflow-hidden rounded-xl bg-gray-200"
+                            className="bg-line relative aspect-square overflow-hidden rounded-xl"
                         >
                             <img
                                 src={src}
@@ -461,7 +461,7 @@ const ApartmentForm = ({
                         </div>
                     ))}
 
-                    <label className="flex aspect-square cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-white text-3xl text-gray-400 active:opacity-70">
+                    <label className="border-line bg-surface text-muted flex aspect-square cursor-pointer items-center justify-center rounded-xl border-2 border-dashed text-3xl active:opacity-70">
                         +
                         <input
                             type="file"
@@ -476,21 +476,21 @@ const ApartmentForm = ({
 
             {/* Тип оплаты — свой переключатель, не через FormControl */}
             <div>
-                <label className="mb-1 block text-sm text-gray-500">
+                <label className="text-muted mb-1 block text-sm">
                     Тип оплаты
                 </label>
                 <div className="flex gap-2">
                     <button
                         type="button"
                         onClick={() => changeDealType('cash')}
-                        className={`flex-1 rounded-xl p-3 font-medium ${dealType === 'cash' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}
+                        className={`flex-1 rounded-xl p-3 font-medium ${dealType === 'cash' ? 'bg-blue-500 text-white' : 'bg-surface text-ink'}`}
                     >
                         Наличными
                     </button>
                     <button
                         type="button"
                         onClick={() => changeDealType('installment')}
-                        className={`flex-1 rounded-xl p-3 font-medium ${dealType === 'installment' ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'}`}
+                        className={`flex-1 rounded-xl p-3 font-medium ${dealType === 'installment' ? 'bg-blue-500 text-white' : 'bg-surface text-ink'}`}
                     >
                         Рассрочка
                     </button>
@@ -498,7 +498,7 @@ const ApartmentForm = ({
             </div>
 
             {dealType === 'installment' && (
-                <div className="space-y-4 rounded-xl bg-blue-50 p-4">
+                <div className="space-y-4 rounded-xl bg-blue-50 p-4 dark:bg-blue-950/40">
                     {renderFields(installmentFields)}
                 </div>
             )}
@@ -511,7 +511,7 @@ const ApartmentForm = ({
                 </p>
             )}
             {saveError && (
-                <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600">
+                <p className="rounded-xl bg-red-50 p-3 text-sm text-red-600 dark:bg-red-950/40 dark:text-red-400">
                     {saveError}
                 </p>
             )}

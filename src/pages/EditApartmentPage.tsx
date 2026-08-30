@@ -117,7 +117,7 @@ const EditApartmentPage = () => {
 
     if (authLoading || aptQuery.isLoading) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-400">
+            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
                 Загрузка…
             </div>
         );
@@ -125,7 +125,7 @@ const EditApartmentPage = () => {
 
     if (!isStaff) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-500">
+            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
                 Нет доступа
             </div>
         );
@@ -135,7 +135,7 @@ const EditApartmentPage = () => {
 
     if (aptQuery.isError || !apt) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-500">
+            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
                 {aptQuery.isError
                     ? 'Не удалось загрузить квартиру'
                     : 'Квартира не найдена'}
@@ -144,11 +144,11 @@ const EditApartmentPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 pb-28">
+        <div className="bg-ground min-h-screen pb-28">
             <header className="pt-safe px-5 pb-4">
                 <div className="flex items-center gap-3">
                     <BackButton to={`/apartment/${id}`} />
-                    <h1 className="text-2xl font-bold text-gray-900">
+                    <h1 className="text-ink text-2xl font-bold">
                         Изменить квартиру
                     </h1>
                 </div>
@@ -167,7 +167,7 @@ const EditApartmentPage = () => {
                     <button
                         onClick={() => setConfirmOpen(true)}
                         disabled={deleteMutation.isPending}
-                        className="w-full rounded-xl border border-red-200 bg-white py-3 font-semibold text-red-600 transition-all duration-200 active:opacity-70 disabled:opacity-50"
+                        className="bg-surface w-full rounded-xl border border-red-200 py-3 font-semibold text-red-600 transition-all duration-200 active:opacity-70 disabled:opacity-50 dark:border-red-900 dark:text-red-400"
                     >
                         {deleteMutation.isPending
                             ? 'Удаляем…'
@@ -175,7 +175,7 @@ const EditApartmentPage = () => {
                     </button>
 
                     {deleteMutation.isError && (
-                        <p className="mt-2 text-sm text-red-600">
+                        <p className="mt-2 text-sm text-red-600 dark:text-red-400">
                             {humanError(deleteMutation.error)}
                         </p>
                     )}

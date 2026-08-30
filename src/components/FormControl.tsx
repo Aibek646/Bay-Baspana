@@ -17,8 +17,8 @@ type FormControlProps = {
 };
 
 const inputClass = (hasError: boolean) =>
-    `w-full rounded-xl border bg-white p-3 text-gray-900 outline-none ${
-        hasError ? 'border-red-400' : 'border-gray-200 focus:border-blue-400'
+    `w-full rounded-xl border bg-surface p-3 text-ink outline-none ${
+        hasError ? 'border-red-400' : 'border-line focus:border-blue-400'
     }`;
 
 const FormControl = ({ field, value, onChange, error }: FormControlProps) => {
@@ -31,9 +31,9 @@ const FormControl = ({ field, value, onChange, error }: FormControlProps) => {
         return (
             <label
                 htmlFor={id}
-                className="flex items-center justify-between rounded-xl bg-white p-3"
+                className="bg-surface flex items-center justify-between rounded-xl p-3"
             >
-                <span className="text-gray-700">{label}</span>
+                <span className="text-ink">{label}</span>
                 <input
                     id={id}
                     type="checkbox"
@@ -89,11 +89,15 @@ const FormControl = ({ field, value, onChange, error }: FormControlProps) => {
 
     return (
         <div>
-            <label htmlFor={id} className="mb-1 block text-sm text-gray-500">
+            <label htmlFor={id} className="text-muted mb-1 block text-sm">
                 {label}
             </label>
             {inputElement}
-            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+            {error && (
+                <p className="mt-1 text-xs text-red-500 dark:text-red-400">
+                    {error}
+                </p>
+            )}
         </div>
     );
 };

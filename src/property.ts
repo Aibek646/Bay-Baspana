@@ -47,7 +47,8 @@ export const propertyTypeEmoji: Record<PropertyType, string> = {
 // Цвет типа — чтобы в списке тип читался мельком, до чтения текста.
 // Жёлтый занят меткой «Новое», серый — «Продано», поэтому не берём их
 export const propertyTypeChip: Record<PropertyType, string> = {
-    apartment: 'bg-blue-100 text-blue-700',
-    house: 'bg-emerald-100 text-emerald-700',
-    commercial: 'bg-violet-100 text-violet-700',
+    apartment: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
+    house: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+    commercial:
+        'bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300',
 };

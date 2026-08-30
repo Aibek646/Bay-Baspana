@@ -11,11 +11,11 @@ const ROOM_OPTIONS = [1, 2, 3, 4];
 
 const chipClass = (active: boolean) =>
     `rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 active:opacity-70 ${
-        active ? 'bg-blue-500 text-white' : 'bg-white text-gray-700'
+        active ? 'bg-blue-500 text-white' : 'bg-ground text-ink'
     }`;
 
 const inputClass =
-    'w-full rounded-xl border border-gray-200 bg-white p-3 text-gray-900 outline-none focus:border-blue-400';
+    'w-full rounded-xl border border-line bg-surface p-3 text-ink outline-none focus:border-blue-400';
 
 const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
     const [open, setOpen] = useState(false);
@@ -42,12 +42,12 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
                     className={`flex shrink-0 items-center gap-2 rounded-xl px-4 font-medium transition-all duration-200 active:opacity-70 ${
                         open || count > 0
                             ? 'bg-blue-500 text-white'
-                            : 'bg-white text-gray-700'
+                            : 'bg-surface text-ink'
                     }`}
                 >
                     Фильтры
                     {count > 0 && (
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-xs font-semibold text-blue-600">
+                        <span className="bg-surface flex h-5 w-5 items-center justify-center rounded-full text-xs font-semibold text-blue-600">
                             {count}
                         </span>
                     )}
@@ -55,9 +55,9 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
             </div>
 
             {open && (
-                <div className="space-y-4 rounded-2xl bg-gray-50 p-4 shadow-[0_4px_14px_rgba(0,0,0,0.06)]">
+                <div className="bg-surface space-y-4 rounded-2xl p-4 shadow-[0_4px_14px_rgba(0,0,0,0.06)]">
                     <div>
-                        <div className="mb-2 text-sm text-gray-500">
+                        <div className="text-muted mb-2 text-sm">
                             Тип объекта
                         </div>
                         <div className="flex flex-wrap gap-2">
@@ -88,7 +88,7 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
                     </div>
 
                     <div>
-                        <div className="mb-2 text-sm text-gray-500">Комнат</div>
+                        <div className="text-muted mb-2 text-sm">Комнат</div>
                         <div className="flex flex-wrap gap-2">
                             <button
                                 type="button"
@@ -111,9 +111,7 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
                     </div>
 
                     <div>
-                        <div className="mb-2 text-sm text-gray-500">
-                            Цена, ₸
-                        </div>
+                        <div className="text-muted mb-2 text-sm">Цена, ₸</div>
                         <div className="flex gap-2">
                             <input
                                 type="number"
@@ -134,8 +132,8 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
                         </div>
                     </div>
 
-                    <label className="flex items-center justify-between rounded-xl bg-white p-3">
-                        <span className="text-gray-700">Скрыть проданные</span>
+                    <label className="bg-ground flex items-center justify-between rounded-xl p-3">
+                        <span className="text-ink">Скрыть проданные</span>
                         <input
                             type="checkbox"
                             checked={value.hideSold}
@@ -148,7 +146,7 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
                         <button
                             type="button"
                             onClick={() => onChange(emptyFilters)}
-                            className="w-full rounded-xl bg-white py-2.5 text-sm font-medium text-blue-600 transition-opacity active:opacity-70"
+                            className="bg-ground w-full rounded-xl py-2.5 text-sm font-medium text-blue-600 transition-opacity active:opacity-70 dark:text-blue-400"
                         >
                             Сбросить фильтры
                         </button>

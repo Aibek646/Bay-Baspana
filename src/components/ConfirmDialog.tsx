@@ -23,10 +23,10 @@ const ConfirmDialog = ({
     >
         <div
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-sm rounded-2xl bg-white p-5 shadow-[0_10px_40px_rgba(0,0,0,0.20)]"
+            className="bg-surface w-full max-w-sm rounded-2xl p-5 shadow-[0_10px_40px_rgba(0,0,0,0.20)]"
         >
-            <h2 className="text-lg font-bold text-gray-900">{title}</h2>
-            <p className="mt-2 text-gray-600">{message}</p>
+            <h2 className="text-ink text-lg font-bold">{title}</h2>
+            <p className="text-muted mt-2">{message}</p>
 
             <div className="mt-5 space-y-2">
                 <button
@@ -39,7 +39,7 @@ const ConfirmDialog = ({
                 <button
                     onClick={onCancel}
                     disabled={busy}
-                    className="w-full rounded-xl bg-gray-100 py-3 font-medium text-gray-700 transition-opacity active:opacity-70 disabled:opacity-50"
+                    className="bg-ground text-ink w-full rounded-xl py-3 font-medium transition-opacity active:opacity-70 disabled:opacity-50"
                 >
                     Отмена
                 </button>

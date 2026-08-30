@@ -51,7 +51,7 @@ const CitiesPage = () => {
 
     if (authLoading || citiesQuery.isLoading || countsQuery.isLoading) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-400">
+            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
                 Загрузка…
             </div>
         );
@@ -59,7 +59,7 @@ const CitiesPage = () => {
 
     if (citiesQuery.isError || countsQuery.isError) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-500">
+            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
                 Не удалось загрузить данные. Проверьте интернет.
             </div>
         );
@@ -74,21 +74,19 @@ const CitiesPage = () => {
     // ↓ дальше разметка без изменений
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="bg-ground min-h-screen">
             <header className="pt-safe px-5 pb-4">
                 <div className="flex items-start justify-between">
                     <div>
                         <h1
                             onClick={handleTitleTap}
-                            className="text-3xl font-bold text-gray-900"
+                            className="text-ink text-3xl font-bold"
                         >
                             BAY BASPANA
                         </h1>
-                        <p className="mt-1 text-gray-500">
-                            Объекты недвижимости
-                        </p>
+                        <p className="text-muted mt-1">Объекты недвижимости</p>
                         {isStaff && (
-                            <span className="mt-1 inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700">
+                            <span className="mt-1 inline-block rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                                 Режим управления
                             </span>
                         )}
@@ -96,13 +94,13 @@ const CitiesPage = () => {
                     {session && (
                         <div className="mt-2 flex flex-col items-end gap-1">
                             <button
-                                className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-200 active:opacity-70"
+                                className="border-line bg-surface text-ink rounded-xl border px-4 py-2 text-sm font-medium transition-all duration-200 active:opacity-70"
                                 onClick={() => supabase.auth.signOut()}
                             >
                                 Выйти
                             </button>
                             <button
-                                className="px-1 text-xs font-medium text-blue-600 active:opacity-70"
+                                className="px-1 text-xs font-medium text-blue-600 active:opacity-70 dark:text-blue-400"
                                 onClick={() => navigate('/password')}
                             >
                                 Сменить пароль
@@ -118,18 +116,18 @@ const CitiesPage = () => {
                         <button
                             onClick={() => navigate(`/city/${city.id}`)}
                             key={city.id}
-                            className="flex w-full cursor-pointer items-center justify-between rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 active:opacity-70 active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
+                            className="bg-surface flex w-full cursor-pointer items-center justify-between rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 active:opacity-70 active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
                         >
                             <div className="text-left">
-                                <div className="text-lg font-semibold text-gray-900">
+                                <div className="text-ink text-lg font-semibold">
                                     {city.name}
                                 </div>
-                                <div className="text-sm text-gray-500">
+                                <div className="text-muted text-sm">
                                     {count} объектов
                                 </div>
                             </div>
 
-                            <span className="text-2xl text-gray-400">›</span>
+                            <span className="text-muted text-2xl">›</span>
                         </button>
                     );
                 })}

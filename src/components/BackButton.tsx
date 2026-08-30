@@ -8,17 +8,19 @@ type BackButtonProps = {
 const BackButton = ({ to, variant = 'plain' }: BackButtonProps) => {
     const navigate = useNavigate();
 
+    // у overlay фон всегда белый (он поверх фотографии), поэтому и цвет
+    // иконки фиксированный — иначе в ночной теме она сливается с фоном
     const look =
         variant === 'overlay'
-            ? 'bg-white/90 shadow-[0_4px_14px_rgba(0,0,0,0.15)] backdrop-blur'
-            : 'bg-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]';
+            ? 'bg-white/90 text-gray-900 shadow-[0_4px_14px_rgba(0,0,0,0.15)] backdrop-blur'
+            : 'bg-surface text-ink shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]';
 
     return (
         <button
             type="button"
             onClick={() => navigate(to)}
             aria-label="Назад"
-            className={`flex h-10 w-10 items-center justify-center rounded-full text-gray-800 transition-all duration-200 active:opacity-70 ${look}`}
+            className={`flex h-10 w-10 items-center justify-center rounded-full transition-all duration-200 active:opacity-70 ${look}`}
         >
             <svg
                 viewBox="0 0 24 24"

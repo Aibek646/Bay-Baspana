@@ -1,5 +1,29 @@
 @import 'tailwindcss';
 
+/* Смысловые цвета. Дневные значения — здесь, ночные — ниже.
+   Разметка использует bg-surface / text-ink / border-line и т.д.,
+   поэтому переключение темы не требует правок в компонентах */
+@theme {
+    --color-ground: #f1f3f6;
+    --color-surface: #ffffff;
+    --color-ink: #111827;
+    --color-muted: #6b7280;
+    --color-line: #e5e7eb;
+    --color-line-soft: #f1f3f6;
+}
+
+/* Ночная тема включается системной настройкой телефона */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-ground: #0f1115;
+        --color-surface: #191d24;
+        --color-ink: #e8eaee;
+        --color-muted: #98a1af;
+        --color-line: #262c35;
+        --color-line-soft: #1f242c;
+    }
+}
+
 @utility pt-safe {
     padding-top: max(1rem, calc(env(safe-area-inset-top) + 0.75rem));
 }

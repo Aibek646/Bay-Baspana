@@ -97,7 +97,7 @@ const ApartmentDetailPage = () => {
 
     if (authLoading || aptQuery.isLoading) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-400">
+            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
                 Загрузка…
             </div>
         );
@@ -107,9 +107,9 @@ const ApartmentDetailPage = () => {
 
     if (aptQuery.isError || !apt) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5">
+            <div className="pt-safe bg-ground min-h-screen p-5">
                 <BackButton to="/" />
-                <p className="mt-4 text-gray-500">
+                <p className="text-muted mt-4">
                     {aptQuery.isError
                         ? 'Не удалось загрузить квартиру'
                         : 'Квартира не найдена'}
@@ -148,9 +148,9 @@ const ApartmentDetailPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 pb-10">
+        <div className="bg-ground min-h-screen pb-10">
             {/* Фото */}
-            <div className="relative aspect-[4/3] bg-gray-300">
+            <div className="bg-line relative aspect-[4/3]">
                 {apt.photos.length > 0 ? (
                     <div
                         onClick={() => setFullScreen(true)}
@@ -172,7 +172,7 @@ const ApartmentDetailPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-gray-500">
+                    <div className="text-muted flex h-full w-full flex-col items-center justify-center gap-2">
                         <span className="text-5xl">
                             {propertyTypeEmoji[apt.propertyType]}
                         </span>
@@ -198,7 +198,7 @@ const ApartmentDetailPage = () => {
                                     key={url}
                                     className={`h-1.5 rounded-full transition-all duration-200 ${
                                         index === activePhoto
-                                            ? 'w-4 bg-white'
+                                            ? 'bg-surface w-4'
                                             : 'w-1.5 bg-white/50'
                                     }`}
                                 />
@@ -212,17 +212,17 @@ const ApartmentDetailPage = () => {
                 {/* Статус */}
                 <div className="mt-5 flex flex-wrap items-center gap-2">
                     {apt.isSold ? (
-                        <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-medium text-gray-600">
+                        <span className="bg-line text-muted rounded-full px-3 py-1 text-sm font-medium">
                             Продано
                         </span>
                     ) : (
-                        <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
+                        <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700 dark:bg-green-950 dark:text-green-300">
                             В продаже
                         </span>
                     )}
 
                     {isNew(apt.createdAt) && (
-                        <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800">
+                        <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800 dark:bg-amber-950 dark:text-amber-300">
                             Новое
                         </span>
                     )}
@@ -234,10 +234,10 @@ const ApartmentDetailPage = () => {
                     </span>
                 </div>
 
-                <h1 className="mt-3 text-2xl font-bold text-gray-900">
+                <h1 className="text-ink mt-3 text-2xl font-bold">
                     {apt.address}
                 </h1>
-                <div className="mt-1 text-xl font-bold text-gray-900">
+                <div className="text-ink mt-1 text-xl font-bold">
                     {formatPrice(apt.price)}
                 </div>
 
@@ -248,7 +248,7 @@ const ApartmentDetailPage = () => {
                         href={apt.videoUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="press mt-4 flex items-center justify-center gap-2 rounded-2xl bg-gray-900 py-3.5 font-semibold text-white shadow-[0_6px_18px_rgba(0,0,0,0.25)] active:opacity-90"
+                        className="press mt-4 flex items-center justify-center gap-2 rounded-2xl bg-gray-900 py-3.5 font-semibold text-white shadow-[0_6px_18px_rgba(0,0,0,0.25)] active:opacity-90 dark:bg-white dark:text-gray-900"
                     >
                         ▶ Смотреть видео
                     </a>
@@ -256,18 +256,16 @@ const ApartmentDetailPage = () => {
 
                 {/* Характеристики */}
                 {specs.length > 0 && (
-                    <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                    <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
                         {specs.map((spec, index) => (
                             <div
                                 key={spec.label}
                                 className={`flex items-center justify-between py-2 ${
-                                    index > 0 ? 'border-t border-gray-100' : ''
+                                    index > 0 ? 'border-line-soft border-t' : ''
                                 }`}
                             >
-                                <span className="text-gray-500">
-                                    {spec.label}
-                                </span>
-                                <span className="font-medium text-gray-900">
+                                <span className="text-muted">{spec.label}</span>
+                                <span className="text-ink font-medium">
                                     {spec.value}
                                 </span>
                             </div>
@@ -275,41 +273,41 @@ const ApartmentDetailPage = () => {
                     </div>
                 )}
 
-                <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
                     {apt.dealType === 'cash' ? (
                         <div className="flex items-center justify-between">
-                            <span className="text-gray-500">Оплата</span>
-                            <span className="font-semibold text-gray-900">
+                            <span className="text-muted">Оплата</span>
+                            <span className="text-ink font-semibold">
                                 Наличными
                             </span>
                         </div>
                     ) : (
                         <div>
                             <div className="mb-3 flex items-center justify-between">
-                                <span className="text-gray-500">Оплата</span>
-                                <span className="font-semibold text-blue-600">
+                                <span className="text-muted">Оплата</span>
+                                <span className="font-semibold text-blue-600 dark:text-blue-400">
                                     Рассрочка
                                 </span>
                             </div>
-                            <div className="flex items-center justify-between border-t border-gray-100 py-2">
-                                <span className="text-gray-500">
+                            <div className="border-line-soft flex items-center justify-between border-t py-2">
+                                <span className="text-muted">
                                     Первоначальный взнос
                                 </span>
-                                <span className="font-medium text-gray-900">
+                                <span className="text-ink font-medium">
                                     {formatPrice(apt.downPayment ?? 0)}
                                 </span>
                             </div>
-                            <div className="flex items-center justify-between border-t border-gray-100 py-2">
-                                <span className="text-gray-500">Срок</span>
-                                <span className="font-medium text-gray-900">
+                            <div className="border-line-soft flex items-center justify-between border-t py-2">
+                                <span className="text-muted">Срок</span>
+                                <span className="text-ink font-medium">
                                     {apt.installmentMonths} мес.
                                 </span>
                             </div>
-                            <div className="flex items-center justify-between border-t border-gray-100 py-2">
-                                <span className="text-gray-500">
+                            <div className="border-line-soft flex items-center justify-between border-t py-2">
+                                <span className="text-muted">
                                     Ежемесячный платёж
                                 </span>
-                                <span className="font-medium text-gray-900">
+                                <span className="text-ink font-medium">
                                     {formatPrice(apt.monthlyPayment ?? 0)}
                                 </span>
                             </div>
@@ -322,12 +320,12 @@ const ApartmentDetailPage = () => {
                 {isStaff && (
                     <>
                         {/* Хозяин + WhatsApp */}
-                        <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-                            <div className="text-sm text-gray-500">Хозяин</div>
-                            <div className="text-lg font-semibold text-gray-900">
+                        <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                            <div className="text-muted text-sm">Хозяин</div>
+                            <div className="text-ink text-lg font-semibold">
                                 {apt.ownerName}
                             </div>
-                            <div className="mt-1 text-gray-600">
+                            <div className="text-muted mt-1">
                                 {apt.whatsapp}
                             </div>
                             <a
@@ -346,7 +344,7 @@ const ApartmentDetailPage = () => {
                                 href={apt.mapUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="press mt-4 flex items-center justify-center gap-2 rounded-2xl bg-white py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:opacity-70"
+                                className="press bg-surface mt-4 flex items-center justify-center gap-2 rounded-2xl py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:opacity-70 dark:text-blue-400"
                             >
                                 📍 Посмотреть на карте
                             </a>
@@ -363,20 +361,20 @@ const ApartmentDetailPage = () => {
                         {/* Комментарий */}
 
                         {apt.complex && (
-                            <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                            <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-gray-500">🔒 ЖК</span>
-                                    <span className="font-medium text-gray-900">
+                                    <span className="text-muted">🔒 ЖК</span>
+                                    <span className="text-ink font-medium">
                                         {apt.complex}
                                     </span>
                                 </div>
                             </div>
                         )}
-                        <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-                            <div className="text-sm text-gray-500">
+                        <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                            <div className="text-muted text-sm">
                                 Комментарий
                             </div>
-                            <div className="mt-1 text-gray-800">
+                            <div className="text-ink mt-1">
                                 {apt.comment || 'Нет комментария'}
                             </div>
                         </div>

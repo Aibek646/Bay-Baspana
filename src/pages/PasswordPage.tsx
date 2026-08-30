@@ -6,7 +6,7 @@ import { useAuth } from '../useAuth.ts';
 import { humanError } from '../errors.ts';
 
 const inputClass =
-    'w-full rounded-xl border border-gray-200 bg-white p-3 text-gray-900 outline-none focus:border-blue-400';
+    'w-full rounded-xl border border-line bg-surface p-3 text-ink outline-none focus:border-blue-400';
 
 const PasswordPage = () => {
     const navigate = useNavigate();
@@ -20,7 +20,7 @@ const PasswordPage = () => {
 
     if (loading) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5 text-gray-400">
+            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
                 Загрузка…
             </div>
         );
@@ -30,9 +30,9 @@ const PasswordPage = () => {
     // и создаёт сессию. Нет сессии — значит ссылка устарела или вход не сделан
     if (!session) {
         return (
-            <div className="pt-safe min-h-screen bg-gray-100 p-5">
+            <div className="pt-safe bg-ground min-h-screen p-5">
                 <BackButton to="/" />
-                <p className="mt-4 text-gray-700">
+                <p className="text-ink mt-4">
                     Ссылка устарела или вы не вошли в аккаунт.
                 </p>
                 <button
@@ -73,20 +73,16 @@ const PasswordPage = () => {
     };
 
     return (
-        <div className="pt-safe min-h-screen bg-gray-100 px-5">
+        <div className="pt-safe bg-ground min-h-screen px-5">
             <BackButton to="/" />
 
-            <h1 className="mt-4 text-3xl font-bold text-gray-900">
-                Смена пароля
-            </h1>
-            <p className="mt-1 mb-6 text-gray-500">{session.user.email}</p>
+            <h1 className="text-ink mt-4 text-3xl font-bold">Смена пароля</h1>
+            <p className="text-muted mt-1 mb-6">{session.user.email}</p>
 
             {done ? (
-                <div className="rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-                    <p className="font-semibold text-gray-900">
-                        Пароль изменён
-                    </p>
-                    <p className="mt-1 text-gray-600">
+                <div className="bg-surface rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                    <p className="text-ink font-semibold">Пароль изменён</p>
+                    <p className="text-muted mt-1">
                         В следующий раз входите с новым паролем.
                     </p>
                     <button
@@ -115,7 +111,11 @@ const PasswordPage = () => {
                         className={inputClass}
                     />
 
-                    {error && <p className="text-sm text-red-500">{error}</p>}
+                    {error && (
+                        <p className="text-sm text-red-500 dark:text-red-400">
+                            {error}
+                        </p>
+                    )}
 
                     <button
                         onClick={handleSave}
