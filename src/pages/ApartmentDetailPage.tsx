@@ -149,7 +149,9 @@ const ApartmentDetailPage = () => {
     }
 
     return (
-        <div className="bg-ground min-h-screen pb-10">
+        <div
+            className={`bg-ground min-h-screen ${isStaff ? 'pb-28' : 'pb-10'}`}
+        >
             {/* Фото */}
             <div className="bg-line relative aspect-[4/3]">
                 {apt.photos.length > 0 ? (
@@ -374,14 +376,6 @@ const ApartmentDetailPage = () => {
                                 )}
                             </div>
                         )}
-                        <button
-                            onClick={() =>
-                                navigate(`/apartment/${apt.id}/edit`)
-                            }
-                            className="mt-4 w-full rounded-2xl bg-blue-500 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 active:opacity-80 active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
-                        >
-                            Изменить
-                        </button>
 
                         <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
                             <div className="text-muted text-sm">
@@ -394,6 +388,27 @@ const ApartmentDetailPage = () => {
                     </>
                 )}
             </div>
+            {isStaff && (
+                <button
+                    onClick={() => navigate(`/apartment/${apt.id}/edit`)}
+                    aria-label="Изменить"
+                    className="btn-accent bottom-safe fixed right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full"
+                >
+                    <svg
+                        viewBox="0 0 24 24"
+                        className="h-6 w-6"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" />
+                    </svg>
+                </button>
+            )}
+
             {/* Полноэкранный просмотр */}
             {fullscreen && (
                 <div
