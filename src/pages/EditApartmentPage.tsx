@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import ApartmentForm, { type SubmitPayload } from '../components/ApartmentForm';
 import BackButton from '../components/BackButton.tsx';
 import ConfirmDialog from '../components/ConfirmDialog.tsx';
+import { CardsSkeleton } from '../components/Skeleton.tsx';
 import type { Apartment } from '../types';
 import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
@@ -117,8 +118,11 @@ const EditApartmentPage = () => {
 
     if (authLoading || aptQuery.isLoading) {
         return (
-            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
-                Загрузка…
+            <div className="bg-ground min-h-screen">
+                <div className="pt-safe px-5 pb-3">
+                    <div className="bg-line h-10 w-10 animate-pulse rounded-full" />
+                </div>
+                <CardsSkeleton count={2} />
             </div>
         );
     }

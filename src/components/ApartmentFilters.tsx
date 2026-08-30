@@ -11,7 +11,7 @@ const ROOM_OPTIONS = [1, 2, 3, 4];
 
 const chipClass = (active: boolean) =>
     `rounded-full px-3 py-1.5 text-sm font-medium transition-all duration-200 active:opacity-70 ${
-        active ? 'bg-blue-500 text-white' : 'bg-ground text-ink'
+        active ? 'btn-accent-sm' : 'bg-ground text-ink'
     }`;
 
 const inputClass =
@@ -41,7 +41,7 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
                     onClick={() => setOpen((prev) => !prev)}
                     className={`flex shrink-0 items-center gap-2 rounded-xl px-4 font-medium transition-all duration-200 active:opacity-70 ${
                         open || count > 0
-                            ? 'bg-blue-500 text-white'
+                            ? 'btn-accent-sm'
                             : 'bg-surface text-ink'
                     }`}
                 >

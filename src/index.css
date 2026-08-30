@@ -73,3 +73,17 @@ button:active,
         transform: none;
     }
 }
+
+/* Акцентная кнопка: градиент и цветная тень под цвет самой кнопки —
+   именно свечение делает кнопку «дорогой», а не сама заливка */
+@utility btn-accent {
+    background-image: linear-gradient(135deg, #4f8cff, #4f46e5);
+    color: #fff;
+    box-shadow: 0 8px 20px -6px rgba(79, 70, 229, 0.55);
+}
+
+@utility btn-accent-sm {
+    background-image: linear-gradient(135deg, #4f8cff, #4f46e5);
+    color: #fff;
+    box-shadow: 0 6px 14px -6px rgba(79, 70, 229, 0.6);
+}

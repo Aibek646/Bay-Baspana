@@ -4,6 +4,7 @@ import type { City } from '../types.ts';
 import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
+import { RowsSkeleton } from '../components/Skeleton.tsx';
 import { useRef } from 'react';
 
 type CityCount = { cityId: string; total: number };
@@ -51,8 +52,11 @@ const CitiesPage = () => {
 
     if (authLoading || citiesQuery.isLoading || countsQuery.isLoading) {
         return (
-            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
-                Загрузка…
+            <div className="bg-ground min-h-screen">
+                <div className="pt-safe px-5 pb-4">
+                    <div className="bg-line h-8 w-48 animate-pulse rounded" />
+                </div>
+                <RowsSkeleton />
             </div>
         );
     }

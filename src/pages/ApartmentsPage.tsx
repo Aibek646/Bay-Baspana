@@ -6,6 +6,7 @@ import type { Apartment, City } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import BackButton from '../components/BackButton.tsx';
+import { CardsSkeleton } from '../components/Skeleton.tsx';
 import {
     formatArea,
     formatLandArea,
@@ -62,8 +63,11 @@ const ApartmentsPage = () => {
 
     if (authLoading || cityQuery.isLoading || apartmentsQuery.isLoading) {
         return (
-            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
-                Загрузка…
+            <div className="bg-ground min-h-screen">
+                <div className="pt-safe px-5 pb-3">
+                    <div className="bg-line h-10 w-10 animate-pulse rounded-full" />
+                </div>
+                <CardsSkeleton />
             </div>
         );
     }

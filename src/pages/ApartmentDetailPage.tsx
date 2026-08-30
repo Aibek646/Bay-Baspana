@@ -6,6 +6,7 @@ import type { Apartment } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import BackButton from '../components/BackButton.tsx';
+import { DetailSkeleton } from '../components/Skeleton.tsx';
 import {
     formatArea,
     formatLandArea,
@@ -97,8 +98,8 @@ const ApartmentDetailPage = () => {
 
     if (authLoading || aptQuery.isLoading) {
         return (
-            <div className="pt-safe bg-ground text-muted min-h-screen p-5">
-                Загрузка…
+            <div className="bg-ground min-h-screen">
+                <DetailSkeleton />
             </div>
         );
     }
