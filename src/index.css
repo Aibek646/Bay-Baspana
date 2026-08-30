@@ -15,12 +15,12 @@
 /* Ночная тема включается системной настройкой телефона */
 @media (prefers-color-scheme: dark) {
     :root {
-        --color-ground: #0f1115;
-        --color-surface: #191d24;
-        --color-ink: #e8eaee;
-        --color-muted: #98a1af;
-        --color-line: #262c35;
-        --color-line-soft: #1f242c;
+        --color-ground: #14110f;
+        --color-surface: #201c18;
+        --color-ink: #efe9e3;
+        --color-muted: #a89f97;
+        --color-line: #2f2822;
+        --color-line-soft: #251f1a;
     }
 }
 
