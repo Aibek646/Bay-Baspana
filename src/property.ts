@@ -36,3 +36,10 @@ export const isFieldVisible = (type: PropertyType, name: string) =>
 
 export const propertyTypeLabel = (type: PropertyType) =>
     PROPERTY_TYPES.find((item) => item.value === type)?.label ?? '';
+
+// заглушка вместо фотографии — заодно тип читается до текста
+export const propertyTypeEmoji: Record<PropertyType, string> = {
+    apartment: '🏢',
+    house: '🏠',
+    commercial: '🏪',
+};

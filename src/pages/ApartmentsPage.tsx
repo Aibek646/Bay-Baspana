@@ -13,7 +13,7 @@ import {
     formatPrice,
     formatRoomsShort,
 } from '../format.ts';
-import { propertyTypeLabel } from '../property.ts';
+import { propertyTypeEmoji, propertyTypeLabel } from '../property.ts';
 import { isNew } from '../dates.ts';
 import ApartmentFilters from '../components/ApartmentFilters.tsx';
 import { applyFilters, emptyFilters, type Filters } from '../filters.ts';
@@ -140,7 +140,7 @@ const ApartmentsPage = () => {
                             className="flex cursor-pointer gap-4 rounded-2xl bg-white p-4 shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 active:opacity-70 active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
                         >
                             {/* Миниатюра */}
-                            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-200">
+                            <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-gray-200">
                                 {apt.photos.length > 0 ? (
                                     <img
                                         src={apt.photos[0]}
@@ -149,7 +149,7 @@ const ApartmentsPage = () => {
                                     />
                                 ) : (
                                     <div className="flex h-full w-full items-center justify-center text-3xl">
-                                        🏠
+                                        {propertyTypeEmoji[apt.propertyType]}
                                     </div>
                                 )}
 
@@ -185,6 +185,15 @@ const ApartmentsPage = () => {
                                 <div className="mt-1 text-lg font-bold text-gray-900">
                                     {formatPrice(apt.price)}
                                 </div>
+
+                                {apt.dealType === 'installment' &&
+                                    apt.monthlyPayment != null && (
+                                        <div className="text-sm text-gray-500">
+                                            Рассрочка ·{' '}
+                                            {formatPrice(apt.monthlyPayment)}
+                                            /мес
+                                        </div>
+                                    )}
 
                                 {/* Хозяин виден только сотрудникам */}
                                 {isStaff && (

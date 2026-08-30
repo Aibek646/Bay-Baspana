@@ -12,7 +12,7 @@ import {
     formatPrice,
     formatRooms,
 } from '../format.ts';
-import { propertyTypeLabel } from '../property.ts';
+import { propertyTypeEmoji, propertyTypeLabel } from '../property.ts';
 import { isNew } from '../dates.ts';
 
 const ApartmentDetailPage = () => {
@@ -105,7 +105,7 @@ const ApartmentDetailPage = () => {
     return (
         <div className="min-h-screen bg-gray-100 pb-10">
             {/* Фото */}
-            <div className="relative h-72 bg-gray-300">
+            <div className="relative aspect-[4/3] bg-gray-300">
                 {apt.photos.length > 0 ? (
                     <div
                         onClick={() => setFullScreen(true)}
@@ -127,7 +127,10 @@ const ApartmentDetailPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="flex h-full w-full items-center justify-center text-gray-500">
+                    <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-gray-500">
+                        <span className="text-5xl">
+                            {propertyTypeEmoji[apt.propertyType]}
+                        </span>
                         Нет фото
                     </div>
                 )}
@@ -328,7 +331,7 @@ const ApartmentDetailPage = () => {
                         href={apt.videoUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-white py-3 font-semibold text-gray-900 shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-opacity active:opacity-70"
+                        className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-blue-500 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 active:opacity-80 active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
                     >
                         🎬 Смотреть видео
                     </a>
