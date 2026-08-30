@@ -113,18 +113,6 @@ const CitiesPage = () => {
                     )}
                 </div>
             </header>
-            {isStaff && (
-                <div className="px-5 pb-3">
-                    <button
-                        onClick={() => navigate('/contacts')}
-                        className="bg-surface text-ink flex w-full items-center justify-between rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]"
-                    >
-                        <span className="font-semibold">📇 Контакты</span>
-                        <span className="text-muted text-2xl">›</span>
-                    </button>
-                </div>
-            )}
-
             <div className="space-y-3 px-5">
                 {cities.map((city) => {
                     const count = counts.get(city.id) ?? 0;
@@ -148,6 +136,41 @@ const CitiesPage = () => {
                     );
                 })}
             </div>
+
+            {isStaff && (
+                <div className="px-5 pt-3">
+                    <button
+                        onClick={() => navigate('/contacts')}
+                        className="bg-surface text-ink flex w-full items-center justify-between rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]"
+                    >
+                        <span className="flex items-center gap-3 font-semibold">
+                            <svg
+                                viewBox="0 0 24 24"
+                                className="h-5 w-5 text-blue-600 dark:text-blue-400"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <rect
+                                    x="3"
+                                    y="4"
+                                    width="18"
+                                    height="16"
+                                    rx="2"
+                                />
+                                <circle cx="9" cy="10" r="2" />
+                                <path d="M5.5 17a3.6 3.6 0 0 1 7 0" />
+                                <path d="M15 9.5h3.5" />
+                                <path d="M15 13.5h3.5" />
+                            </svg>
+                            Контакты
+                        </span>
+                        <span className="text-muted text-2xl">›</span>
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
