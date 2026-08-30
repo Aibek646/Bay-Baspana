@@ -72,9 +72,11 @@ VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 Колонки в **camelCase** и в кавычках — чтобы совпадать с TS-кодом.
 
 ### `cities`
+
 `id text pk` · `name text not null`
 
 ### `apartments`
+
 `id uuid pk default gen_random_uuid()` · `"cityId" text fk → cities(id)` · `address text`
 · `"ownerName" text` · `whatsapp text` · `price bigint` · `"isSold" boolean` · `comment text`
 · `photos text[]` · `"dealType" text check in ('cash','installment')` · `"downPayment" bigint`
@@ -86,11 +88,11 @@ VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 Клиент **не должен** видеть точный адрес и контакты хозяина (иначе поедет сам / позвонит
 напрямую в обход друга).
 
-| 🔒 Только админ | 🌍 Публично |
-|---|---|
-| `ownerName`, `whatsapp` | `address` (сюда пишем **только район**, напр. «мкр. Самал-2») |
-| `mapUrl` (тут точный адрес — ссылка 2ГИС/Яндекс) | `price`, `isSold`, `dealType` + поля рассрочки |
-| `comment` (внутренние заметки) | `photos`, `cityId` |
+| 🔒 Только админ                                  | 🌍 Публично                                                   |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+| `ownerName`, `whatsapp`                          | `address` (сюда пишем **только район**, напр. «мкр. Самал-2») |
+| `mapUrl` (тут точный адрес — ссылка 2ГИС/Яндекс) | `price`, `isSold`, `dealType` + поля рассрочки                |
+| `comment` (внутренние заметки)                   | `photos`, `cityId`                                            |
 
 Реализовано так:
 
@@ -110,6 +112,7 @@ create policy "anyone can read cities" on cities for select using (true);
 ```
 
 Приложение выбирает источник:
+
 ```ts
 const table = isAdmin ? 'apartments' : 'apartments_public';
 ```

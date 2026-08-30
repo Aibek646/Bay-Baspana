@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 const NotFoundPage = () => (
-    <div className="min-h-screen bg-gray-100 p-5 pt-safe">
+    <div className="pt-safe min-h-screen bg-gray-100 p-5">
         <h1 className="text-2xl font-bold text-gray-900">
             Страница не найдена
         </h1>

@@ -16,7 +16,6 @@ const AddApartmentPage = () => {
     const saveMutation = useMutation({
         mutationFn: async ({ form, dealType, files }: SubmitPayload) => {
             const photos = await uploadPhotos(files);
-            const isInstallment = dealType === 'installment';
 
             const { error } = await supabase.from('apartments').insert({
                 ...formToApartment(form, dealType),

@@ -6,8 +6,7 @@ import type { Apartment } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import BackButton from '../components/BackButton.tsx';
-
-const formatPrice = (n: number) => n.toLocaleString('ru-RU') + ' ₸';
+import { formatArea, formatPrice, formatRooms } from '../format.ts';
 
 const ApartmentDetailPage = () => {
     const { id } = useParams();
@@ -69,6 +68,29 @@ const ApartmentDetailPage = () => {
 
     const waNumber = apt.whatsapp?.replace(/\D/g, '') ?? '';
     const waLink = `https://wa.me/${waNumber}`;
+
+    type Spec = { label: string; value: string };
+
+    const specs: Spec[] = [];
+
+    if (apt.rooms != null) {
+        specs.push({ label: 'Комнат', value: formatRooms(apt.rooms) });
+    }
+    if (apt.area != null) {
+        specs.push({ label: 'Площадь', value: formatArea(apt.area) });
+    }
+    if (apt.floor != null) {
+        specs.push({
+            label: 'Этаж',
+            value:
+                apt.floorsTotal != null
+                    ? `${apt.floor} из ${apt.floorsTotal}`
+                    : String(apt.floor),
+        });
+    }
+    if (apt.builtYear != null) {
+        specs.push({ label: 'Год постройки', value: String(apt.builtYear) });
+    }
 
     return (
         <div className="min-h-screen bg-gray-100 pb-10">
@@ -148,6 +170,27 @@ const ApartmentDetailPage = () => {
                 <div className="mt-1 text-xl font-bold text-gray-900">
                     {formatPrice(apt.price)}
                 </div>
+
+                {/* Характеристики */}
+                {specs.length > 0 && (
+                    <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                        {specs.map((spec, index) => (
+                            <div
+                                key={spec.label}
+                                className={`flex items-center justify-between py-2 ${
+                                    index > 0 ? 'border-t border-gray-100' : ''
+                                }`}
+                            >
+                                <span className="text-gray-500">
+                                    {spec.label}
+                                </span>
+                                <span className="font-medium text-gray-900">
+                                    {spec.value}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
                     {apt.dealType === 'cash' ? (
@@ -235,6 +278,17 @@ const ApartmentDetailPage = () => {
                         </button>
 
                         {/* Комментарий */}
+
+                        {apt.complex && (
+                            <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-500">🔒 ЖК</span>
+                                    <span className="font-medium text-gray-900">
+                                        {apt.complex}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                         <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
                             <div className="text-sm text-gray-500">
                                 Комментарий
