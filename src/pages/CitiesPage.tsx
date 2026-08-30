@@ -94,12 +94,20 @@ const CitiesPage = () => {
                         )}
                     </div>
                     {session && (
-                        <button
-                            className="mt-2 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-200 active:opacity-70"
-                            onClick={() => supabase.auth.signOut()}
-                        >
-                            Выйти
-                        </button>
+                        <div className="mt-2 flex flex-col items-end gap-1">
+                            <button
+                                className="rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-all duration-200 active:opacity-70"
+                                onClick={() => supabase.auth.signOut()}
+                            >
+                                Выйти
+                            </button>
+                            <button
+                                className="px-1 text-xs font-medium text-blue-600 active:opacity-70"
+                                onClick={() => navigate('/password')}
+                            >
+                                Сменить пароль
+                            </button>
+                        </div>
                     )}
                 </div>
             </header>

@@ -6,6 +6,7 @@ import AddApartmentPage from './pages/AddApartmentPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import EditApartmentPage from './pages/EditApartmentPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
+import PasswordPage from './pages/PasswordPage.tsx';
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/apartment/:id" element={<ApartmentDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/apartment/:id/edit" element={<EditApartmentPage />} />
+            <Route path="/password" element={<PasswordPage />} />
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );

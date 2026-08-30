@@ -12,6 +12,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [sent, setSent] = useState(false);
 
     const handleLogin = async () => {
         setLoading(true);
@@ -27,6 +28,32 @@ const LoginPage = () => {
             return;
         }
         navigate('/');
+    };
+
+    // письмо со ссылкой на /password: там Supabase создаст сессию,
+    // и откроется та же форма смены пароля
+    const handleReset = async () => {
+        if (!email) {
+            setError('Введите email — на него отправим письмо');
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+
+        const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+            email,
+            { redirectTo: `${window.location.origin}/password` }
+        );
+
+        setLoading(false);
+
+        if (resetError) {
+            setError('Не удалось отправить письмо. Попробуйте позже');
+            return;
+        }
+
+        setSent(true);
     };
 
     return (
@@ -66,6 +93,21 @@ const LoginPage = () => {
                 >
                     Назад к объектам
                 </button>
+
+                {sent ? (
+                    <p className="text-center text-sm text-green-700">
+                        Письмо отправлено. Откройте ссылку из него на этом же
+                        телефоне.
+                    </p>
+                ) : (
+                    <button
+                        onClick={handleReset}
+                        disabled={loading}
+                        className="w-full py-2 text-sm font-medium text-blue-600 active:opacity-70 disabled:opacity-50"
+                    >
+                        Забыли пароль?
+                    </button>
+                )}
             </div>
         </div>
     );
