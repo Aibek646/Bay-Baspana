@@ -1,4 +1,7 @@
-export type FieldType = 'text' | 'number' | 'textarea' | 'checkbox' | 'select';
+import { formatPhone, groupDigits } from '../format';
+
+export type FieldType =
+    'text' | 'number' | 'money' | 'phone' | 'textarea' | 'checkbox' | 'select';
 
 export type Field = {
     name: string;
@@ -47,7 +50,32 @@ const FormControl = ({ field, value, onChange, error }: FormControlProps) => {
 
     let inputElement = null;
 
-    if (type === 'text' || type === 'number') {
+    // деньги храним цифрами, телефон — уже отформатированным:
+    // так на странице объекта номер выглядит так же, как его вводили
+    if (type === 'money' || type === 'phone') {
+        const isMoney = type === 'money';
+        const shown = isMoney
+            ? groupDigits(String(value ?? ''))
+            : formatPhone(String(value ?? ''));
+
+        inputElement = (
+            <input
+                id={id}
+                type={isMoney ? 'text' : 'tel'}
+                inputMode={isMoney ? 'numeric' : 'tel'}
+                placeholder={placeholder}
+                value={shown}
+                onChange={(e) =>
+                    onChange(
+                        isMoney
+                            ? e.target.value.replace(/\D/g, '')
+                            : formatPhone(e.target.value)
+                    )
+                }
+                className={inputClass(Boolean(error))}
+            />
+        );
+    } else if (type === 'text' || type === 'number') {
         inputElement = (
             <input
                 id={id}

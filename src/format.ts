@@ -36,3 +36,23 @@ export const formatLandArea = (value: number) => {
 // 1 объект, 2 объекта, 5 объектов
 export const formatObjects = (n: number) =>
     `${n} ${plural(n, 'объект', 'объекта', 'объектов')}`;
+
+// 42000000 → «42 000 000». Разряды по три, чтобы миллион был виден сразу
+export const groupDigits = (value: string) =>
+    value.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+// 87764344343 → «+7 776 434 4343». Восьмёрку в начале меняем на семёрку
+export const formatPhone = (value: string) => {
+    let digits = value.replace(/\D/g, '').slice(0, 11);
+    if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+    if (!digits) return '';
+
+    const parts = [
+        digits.slice(0, 1),
+        digits.slice(1, 4),
+        digits.slice(4, 7),
+        digits.slice(7, 11),
+    ].filter(Boolean);
+
+    return '+' + parts.join(' ');
+};

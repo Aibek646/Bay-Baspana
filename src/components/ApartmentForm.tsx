@@ -51,8 +51,8 @@ const mainFields: Field[] = [
     {
         name: 'price',
         label: 'Цена (₸)',
-        type: 'number',
-        placeholder: '42000000',
+        type: 'money',
+        placeholder: '42 000 000',
     },
     {
         name: 'videoUrl',
@@ -63,6 +63,7 @@ const mainFields: Field[] = [
     {
         name: 'whatsapp',
         label: '🔒 WhatsApp хозяина',
+        type: 'phone',
         placeholder: '+7 701 234 5678',
     },
     { name: 'complex', label: '🔒 ЖК', placeholder: 'ЖК Асыл Тау' },
@@ -79,9 +80,9 @@ const mainFields: Field[] = [
 ];
 
 const installmentFields: Field[] = [
-    { name: 'downPayment', label: 'Первоначальный взнос (₸)', type: 'number' },
+    { name: 'downPayment', label: 'Первоначальный взнос (₸)', type: 'money' },
     { name: 'installmentMonths', label: 'Срок (месяцев)', type: 'number' },
-    { name: 'monthlyPayment', label: 'Ежемесячный платёж (₸)', type: 'number' },
+    { name: 'monthlyPayment', label: 'Ежемесячный платёж (₸)', type: 'money' },
 ];
 
 const tailFields: Field[] = [
