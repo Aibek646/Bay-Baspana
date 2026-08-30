@@ -39,3 +39,16 @@ export type Apartment = {
     comment?: string;
     complex?: string;
 };
+
+// Справочник сотрудников: нотариусы, банки, оценщики.
+// Клиентам не показывается — таблица закрыта на уровне базы
+export type Contact = {
+    id: string;
+    name: string;
+    role?: string;
+    phone?: string;
+    address?: string;
+    mapUrl?: string;
+    comment?: string;
+    createdAt?: string;
+};

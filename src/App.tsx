@@ -7,6 +7,8 @@ import LoginPage from './pages/LoginPage.tsx';
 import EditApartmentPage from './pages/EditApartmentPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
 import PasswordPage from './pages/PasswordPage.tsx';
+import ContactsPage from './pages/ContactsPage.tsx';
+import ContactFormPage from './pages/ContactFormPage.tsx';
 
 function App() {
     return (
@@ -18,6 +20,9 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/apartment/:id/edit" element={<EditApartmentPage />} />
             <Route path="/password" element={<PasswordPage />} />
+            <Route path="/contacts" element={<ContactsPage />} />
+            <Route path="/contacts/new" element={<ContactFormPage />} />
+            <Route path="/contacts/:id/edit" element={<ContactFormPage />} />
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );

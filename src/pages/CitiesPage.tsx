@@ -113,6 +113,18 @@ const CitiesPage = () => {
                     )}
                 </div>
             </header>
+            {isStaff && (
+                <div className="px-5 pb-3">
+                    <button
+                        onClick={() => navigate('/contacts')}
+                        className="bg-surface text-ink flex w-full items-center justify-between rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]"
+                    >
+                        <span className="font-semibold">📇 Контакты</span>
+                        <span className="text-muted text-2xl">›</span>
+                    </button>
+                </div>
+            )}
+
             <div className="space-y-3 px-5">
                 {cities.map((city) => {
                     const count = counts.get(city.id) ?? 0;

@@ -14,3 +14,9 @@ export const apartmentKeys = {
         id ?? null,
     ],
 };
+
+export const contactKeys = {
+    all: ['contacts'],
+    list: () => ['contacts', 'list'],
+    detail: (id?: string) => ['contacts', 'detail', id ?? null],
+};
