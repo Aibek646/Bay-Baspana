@@ -233,6 +233,19 @@ const ApartmentDetailPage = () => {
                     {formatPrice(apt.price)}
                 </div>
 
+                {/* Видео — главный способ посмотреть объект, поэтому сразу
+                    под ценой и чёрной кнопкой, в тон TikTok */}
+                {apt.videoUrl && (
+                    <a
+                        href={apt.videoUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="press mt-4 flex items-center justify-center gap-2 rounded-2xl bg-gray-900 py-3.5 font-semibold text-white shadow-[0_6px_18px_rgba(0,0,0,0.25)] active:opacity-90"
+                    >
+                        ▶ Смотреть видео
+                    </a>
+                )}
+
                 {/* Характеристики */}
                 {specs.length > 0 && (
                     <div className="mt-4 rounded-2xl bg-white p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
@@ -313,7 +326,7 @@ const ApartmentDetailPage = () => {
                                 href={waLink}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="mt-4 flex items-center justify-center rounded-xl bg-green-500 py-3 font-semibold text-white transition-opacity active:opacity-80"
+                                className="press mt-4 flex items-center justify-center rounded-xl bg-green-500 py-3 font-semibold text-white active:opacity-80"
                             >
                                 Написать в WhatsApp
                             </a>
@@ -325,7 +338,7 @@ const ApartmentDetailPage = () => {
                                 href={apt.mapUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-white py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-opacity active:opacity-70"
+                                className="press mt-4 flex items-center justify-center gap-2 rounded-2xl bg-white py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:opacity-70"
                             >
                                 📍 Посмотреть на карте
                             </a>
@@ -360,17 +373,6 @@ const ApartmentDetailPage = () => {
                             </div>
                         </div>
                     </>
-                )}
-
-                {apt.videoUrl && (
-                    <a
-                        href={apt.videoUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-blue-500 py-3 font-semibold text-white shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 active:opacity-80 active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
-                    >
-                        🎬 Смотреть видео
-                    </a>
                 )}
 
                 {/* Комментарий */}

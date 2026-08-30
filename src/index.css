@@ -20,3 +20,32 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+/* Отклик на нажатие — один раз для всех кнопок.
+   .press — для ссылок, которые выглядят как кнопки */
+button,
+.press {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition:
+        transform 150ms ease,
+        opacity 150ms ease,
+        box-shadow 200ms ease;
+}
+
+button:active,
+.press:active {
+    transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    button,
+    .press {
+        transition: none;
+    }
+
+    button:active,
+    .press:active {
+        transform: none;
+    }
+}

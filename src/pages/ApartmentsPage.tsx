@@ -80,23 +80,24 @@ const ApartmentsPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            <header className="pt-safe px-5 pb-4">
+            {/* Шапка липкая целиком: так безопасная зона учитывается один раз,
+                и под вырезом не просвечивает уезжающий список */}
+            <header className="pt-safe sticky top-0 z-20 space-y-3 bg-gray-100 px-5 pb-3">
                 <div className="flex items-center gap-3">
                     <BackButton to="/" />
                     <h1 className="text-2xl font-bold text-gray-900">
                         {city?.name}
                     </h1>
                 </div>
-                <p className="mt-1 text-gray-500">
+
+                <ApartmentFilters value={filters} onChange={setFilters} />
+
+                <p className="text-sm text-gray-500">
                     {visible.length === list.length
                         ? formatObjects(list.length)
                         : `Найдено ${formatObjects(visible.length)} из ${list.length}`}
                 </p>
             </header>
-
-            <div className="px-5 pb-4">
-                <ApartmentFilters value={filters} onChange={setFilters} />
-            </div>
 
             <div className="space-y-3 px-5">
                 {visible.map((apt) => {
