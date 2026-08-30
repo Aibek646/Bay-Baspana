@@ -82,7 +82,12 @@ const ApartmentsPage = () => {
 
     const city = cityQuery.data;
     const list = apartmentsQuery.data ?? [];
-    const visible = applyFilters(list, filters);
+    // архив показываем только сотрудникам, даже если флаг остался
+    // включённым с прошлого входа
+    const visible = applyFilters(
+        list,
+        isStaff ? filters : { ...filters, showArchive: false }
+    );
 
     // ↓ разметка без изменений
 
@@ -98,7 +103,11 @@ const ApartmentsPage = () => {
                     </h1>
                 </div>
 
-                <ApartmentFilters value={filters} onChange={setFilters} />
+                <ApartmentFilters
+                    value={filters}
+                    onChange={setFilters}
+                    canSeeArchive={isStaff}
+                />
 
                 <p className="text-muted text-sm">
                     {visible.length === list.length

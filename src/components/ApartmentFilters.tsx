@@ -5,6 +5,7 @@ import { activeCount, emptyFilters, type Filters } from '../filters';
 type ApartmentFiltersProps = {
     value: Filters;
     onChange: (next: Filters) => void;
+    canSeeArchive: boolean;
 };
 
 const ROOM_OPTIONS = [1, 2, 3, 4];
@@ -17,7 +18,11 @@ const chipClass = (active: boolean) =>
 const inputClass =
     'w-full rounded-xl border border-line bg-surface p-3 text-ink outline-none focus:border-blue-400';
 
-const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
+const ApartmentFilters = ({
+    value,
+    onChange,
+    canSeeArchive,
+}: ApartmentFiltersProps) => {
     const [open, setOpen] = useState(false);
     const count = activeCount(value);
 
@@ -142,17 +147,20 @@ const ApartmentFilters = ({ value, onChange }: ApartmentFiltersProps) => {
                         />
                     </label>
 
-                    <label className="bg-ground flex items-center justify-between rounded-xl p-3">
-                        <span className="text-ink">Показать архив</span>
-                        <input
-                            type="checkbox"
-                            checked={value.showArchive}
-                            onChange={(e) =>
-                                set('showArchive', e.target.checked)
-                            }
-                            className="h-5 w-5"
-                        />
-                    </label>
+                    {/* архив — инструмент сотрудника, клиенту не показываем */}
+                    {canSeeArchive && (
+                        <label className="bg-ground flex items-center justify-between rounded-xl p-3">
+                            <span className="text-ink">Показать архив</span>
+                            <input
+                                type="checkbox"
+                                checked={value.showArchive}
+                                onChange={(e) =>
+                                    set('showArchive', e.target.checked)
+                                }
+                                className="h-5 w-5"
+                            />
+                        </label>
+                    )}
 
                     {count > 0 && (
                         <button
