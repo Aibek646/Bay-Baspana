@@ -315,8 +315,6 @@ const ApartmentDetailPage = () => {
                     )}
                 </div>
 
-                {/* Хозяин + WhatsApp */}
-
                 {isStaff && (
                     <>
                         {/* Хозяин + WhatsApp */}
@@ -338,6 +336,17 @@ const ApartmentDetailPage = () => {
                             </a>
                         </div>
 
+                        {apt.complex && (
+                            <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-muted">🔒 ЖК</span>
+                                    <span className="text-ink font-medium">
+                                        {apt.complex}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Точный адрес на карте */}
                         {apt.mapUrl && (
                             <a
@@ -358,18 +367,6 @@ const ApartmentDetailPage = () => {
                             Изменить
                         </button>
 
-                        {/* Комментарий */}
-
-                        {apt.complex && (
-                            <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-muted">🔒 ЖК</span>
-                                    <span className="text-ink font-medium">
-                                        {apt.complex}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
                         <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
                             <div className="text-muted text-sm">
                                 Комментарий
@@ -380,8 +377,6 @@ const ApartmentDetailPage = () => {
                         </div>
                     </>
                 )}
-
-                {/* Комментарий */}
             </div>
             {/* Полноэкранный просмотр */}
             {fullscreen && (
