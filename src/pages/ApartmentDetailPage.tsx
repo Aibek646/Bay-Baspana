@@ -278,7 +278,7 @@ const ApartmentDetailPage = () => {
                     {apt.dealType === 'cash' ? (
                         <div className="flex items-center justify-between">
                             <span className="text-muted">Оплата</span>
-                            <span className="text-ink font-semibold">
+                            <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300">
                                 Наличными
                             </span>
                         </div>
@@ -286,7 +286,7 @@ const ApartmentDetailPage = () => {
                         <div>
                             <div className="mb-3 flex items-center justify-between">
                                 <span className="text-muted">Оплата</span>
-                                <span className="font-semibold text-blue-600 dark:text-blue-400">
+                                <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                                     Рассрочка
                                 </span>
                             </div>
