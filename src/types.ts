@@ -5,6 +5,8 @@ export type City = {
 
 export type DealType = 'cash' | 'installment';
 
+export type PropertyType = 'apartment' | 'house' | 'commercial';
+
 export type Apartment = {
     id: string;
     cityId: string;
@@ -17,6 +19,8 @@ export type Apartment = {
     installmentMonths?: number;
     monthlyPayment?: number;
     videoUrl?: string;
+    propertyType: PropertyType;
+    landArea?: number;
 
     rooms?: number;
     area?: number;

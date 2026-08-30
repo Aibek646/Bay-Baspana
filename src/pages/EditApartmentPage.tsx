@@ -41,6 +41,7 @@ const EditApartmentPage = () => {
         mutationFn: async ({
             form,
             dealType,
+            propertyType,
             files,
             removedPhotos,
         }: SubmitPayload) => {
@@ -55,7 +56,10 @@ const EditApartmentPage = () => {
 
             const { error } = await supabase
                 .from('apartments')
-                .update({ ...formToApartment(form, dealType), photos })
+                .update({
+                    ...formToApartment(form, dealType, propertyType),
+                    photos,
+                })
                 .eq('id', id);
 
             if (error) {

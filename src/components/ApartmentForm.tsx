@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import FormControl, { type Field } from './FormControl';
-import type { Apartment, DealType } from '../types';
+import type { Apartment, DealType, PropertyType } from '../types';
+import { isFieldVisible, PROPERTY_TYPES } from '../property.ts';
 
 const mainFields: Field[] = [
     {
@@ -20,6 +21,13 @@ const mainFields: Field[] = [
         type: 'number',
         step: '0.1',
         placeholder: '62.5',
+    },
+    {
+        name: 'landArea',
+        label: 'Участок, соток',
+        type: 'number',
+        step: '0.1',
+        placeholder: '6',
     },
     { name: 'floor', label: 'Этаж', type: 'number', placeholder: '3' },
     {
@@ -95,13 +103,19 @@ const emptyForm: FormState = {
     floorsTotal: '',
     builtYear: '',
     complex: '',
+    landArea: '',
 };
 type Errors = Record<string, string>;
 
 const digitsOf = (value: string) => value.replace(/\D/g, '');
 
-const validate = (form: FormState, dealType: DealType): Errors => {
+const validate = (
+    form: FormState,
+    dealType: DealType,
+    propertyType: PropertyType
+): Errors => {
     const errors: Errors = {};
+    const visible = (name: string) => isFieldVisible(propertyType, name);
 
     if (!String(form.address).trim()) {
         errors.address = 'Укажите район';
@@ -150,46 +164,77 @@ const validate = (form: FormState, dealType: DealType): Errors => {
         return raw === '' ? null : Number(raw);
     };
 
-    const rooms = optionalNumber('rooms');
-    if (
-        rooms !== null &&
-        (!Number.isInteger(rooms) || rooms < 0 || rooms > 20)
-    ) {
-        errors.rooms = 'Целое число от 0 до 20';
+    // проверяем только то, что видно для этого типа объекта:
+    // иначе форма ругалась бы на поле, которого нет на экране
+    if (visible('rooms')) {
+        const rooms = optionalNumber('rooms');
+        if (
+            rooms !== null &&
+            (!Number.isInteger(rooms) || rooms < 0 || rooms > 20)
+        ) {
+            errors.rooms = 'Целое число от 0 до 20';
+        }
     }
 
-    const area = optionalNumber('area');
-    if (area !== null && (!Number.isFinite(area) || area <= 0 || area > 1000)) {
-        errors.area = 'Площадь от 1 до 1000 м²';
+    if (visible('area')) {
+        const area = optionalNumber('area');
+        if (
+            area !== null &&
+            (!Number.isFinite(area) || area <= 0 || area > 1000)
+        ) {
+            errors.area = 'Площадь от 1 до 1000 м²';
+        }
+    }
+
+    if (visible('landArea')) {
+        const landArea = optionalNumber('landArea');
+        if (
+            landArea !== null &&
+            (!Number.isFinite(landArea) || landArea <= 0 || landArea > 1000)
+        ) {
+            errors.landArea = 'Участок от 0,1 до 1000 соток';
+        }
     }
 
     const floorsTotal = optionalNumber('floorsTotal');
-    if (
-        floorsTotal !== null &&
-        (!Number.isInteger(floorsTotal) || floorsTotal < 1 || floorsTotal > 200)
-    ) {
-        errors.floorsTotal = 'Целое число от 1 до 200';
+    if (visible('floorsTotal')) {
+        if (
+            floorsTotal !== null &&
+            (!Number.isInteger(floorsTotal) ||
+                floorsTotal < 1 ||
+                floorsTotal > 200)
+        ) {
+            errors.floorsTotal = 'Целое число от 1 до 200';
+        }
     }
 
-    const floor = optionalNumber('floor');
-    if (
-        floor !== null &&
-        (!Number.isInteger(floor) || floor < 1 || floor > 200)
-    ) {
-        errors.floor = 'Целое число от 1 до 200';
-    } else if (floor !== null && floorsTotal !== null && floor > floorsTotal) {
-        errors.floor = 'Этаж не может быть больше этажности';
+    if (visible('floor')) {
+        const floor = optionalNumber('floor');
+        if (
+            floor !== null &&
+            (!Number.isInteger(floor) || floor < 1 || floor > 200)
+        ) {
+            errors.floor = 'Целое число от 1 до 200';
+        } else if (
+            floor !== null &&
+            floorsTotal !== null &&
+            floor > floorsTotal
+        ) {
+            errors.floor = 'Этаж не может быть больше этажности';
+        }
     }
 
-    const builtYear = optionalNumber('builtYear');
-    const maxYear = new Date().getFullYear() + 5;
-    if (
-        builtYear !== null &&
-        (!Number.isInteger(builtYear) ||
-            builtYear < 1900 ||
-            builtYear > maxYear)
-    ) {
-        errors.builtYear = `Год от 1900 до ${maxYear}`;
+    if (visible('builtYear')) {
+        const builtYear = optionalNumber('builtYear');
+        const maxYear = new Date().getFullYear() + 5;
+        if (
+            builtYear !== null &&
+            (!Number.isInteger(builtYear) ||
+                builtYear < 1900 ||
+                builtYear > maxYear)
+        ) {
+            errors.builtYear = `Год от 1900 до ${maxYear}`;
+        }
     }
 
     return errors;
@@ -216,11 +261,13 @@ const toFormState = (apt: Apartment): FormState => ({
     floorsTotal: apt.floorsTotal != null ? String(apt.floorsTotal) : '',
     builtYear: apt.builtYear != null ? String(apt.builtYear) : '',
     complex: apt.complex ?? '',
+    landArea: apt.landArea != null ? String(apt.landArea) : '',
 });
 
 export type SubmitPayload = {
     form: FormState;
     dealType: DealType;
+    propertyType: PropertyType;
     files: File[];
     removedPhotos: string[];
 };
@@ -257,6 +304,15 @@ const ApartmentForm = ({
     );
     const [errors, setErrors] = useState<Errors>({});
 
+    const [propertyType, setPropertyType] = useState<PropertyType>(
+        initial?.propertyType ?? 'apartment'
+    );
+
+    const changePropertyType = (next: PropertyType) => {
+        setPropertyType(next);
+        setErrors({});
+    };
+
     const removePhoto = (index: number) => {
         URL.revokeObjectURL(previews[index]);
         setFiles((prev) => prev.filter((_, i) => i !== index));
@@ -285,23 +341,25 @@ const ApartmentForm = ({
     };
 
     const renderFields = (fields: Field[]) =>
-        fields.map((field) => (
-            <FormControl
-                key={field.name}
-                field={field}
-                value={form[field.name]}
-                onChange={(value) => setField(field.name, value)}
-                error={errors[field.name]}
-            />
-        ));
+        fields
+            .filter((field) => isFieldVisible(propertyType, field.name))
+            .map((field) => (
+                <FormControl
+                    key={field.name}
+                    field={field}
+                    value={form[field.name]}
+                    onChange={(value) => setField(field.name, value)}
+                    error={errors[field.name]}
+                />
+            ));
 
     const handleSubmit = () => {
-        const found = validate(form, dealType);
+        const found = validate(form, dealType, propertyType);
         setErrors(found);
 
         if (Object.keys(found).length > 0) return;
 
-        onSubmit({ form, dealType, files, removedPhotos });
+        onSubmit({ form, dealType, propertyType, files, removedPhotos });
     };
 
     const changeDealType = (next: DealType) => {
@@ -311,6 +369,28 @@ const ApartmentForm = ({
 
     return (
         <div className="space-y-4 px-5">
+            <div>
+                <label className="mb-1 block text-sm text-gray-500">
+                    Тип объекта
+                </label>
+                <div className="flex gap-2">
+                    {PROPERTY_TYPES.map((item) => (
+                        <button
+                            key={item.value}
+                            type="button"
+                            onClick={() => changePropertyType(item.value)}
+                            className={`flex-1 rounded-xl p-3 text-sm font-medium ${
+                                propertyType === item.value
+                                    ? 'bg-blue-500 text-white'
+                                    : 'bg-white text-gray-700'
+                            }`}
+                        >
+                            {item.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {renderFields(mainFields)}
 
             {/* Уже загруженные фото — при редактировании */}

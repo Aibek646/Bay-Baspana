@@ -6,7 +6,13 @@ import type { Apartment } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import BackButton from '../components/BackButton.tsx';
-import { formatArea, formatPrice, formatRooms } from '../format.ts';
+import {
+    formatArea,
+    formatLandArea,
+    formatPrice,
+    formatRooms,
+} from '../format.ts';
+import { propertyTypeLabel } from '../property.ts';
 
 const ApartmentDetailPage = () => {
     const { id } = useParams();
@@ -78,6 +84,9 @@ const ApartmentDetailPage = () => {
     }
     if (apt.area != null) {
         specs.push({ label: 'Площадь', value: formatArea(apt.area) });
+    }
+    if (apt.landArea != null) {
+        specs.push({ label: 'Участок', value: formatLandArea(apt.landArea) });
     }
     if (apt.floor != null) {
         specs.push({
@@ -152,7 +161,7 @@ const ApartmentDetailPage = () => {
 
             <div className="px-5">
                 {/* Статус */}
-                <div className="mt-5">
+                <div className="mt-5 flex flex-wrap items-center gap-2">
                     {apt.isSold ? (
                         <span className="rounded-full bg-gray-200 px-3 py-1 text-sm font-medium text-gray-600">
                             Продано
@@ -160,6 +169,13 @@ const ApartmentDetailPage = () => {
                     ) : (
                         <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
                             В продаже
+                        </span>
+                    )}
+
+                    {/* квартиру не помечаем — их большинство */}
+                    {apt.propertyType !== 'apartment' && (
+                        <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-700">
+                            {propertyTypeLabel(apt.propertyType)}
                         </span>
                     )}
                 </div>

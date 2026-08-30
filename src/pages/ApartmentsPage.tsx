@@ -1,17 +1,29 @@
 import { useNavigate, useParams } from 'react-router-dom';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '../supabase';
 import type { Apartment, City } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import BackButton from '../components/BackButton.tsx';
-import { formatArea, formatPrice, formatRoomsShort } from '../format.ts';
+import {
+    formatArea,
+    formatLandArea,
+    formatObjects,
+    formatPrice,
+    formatRoomsShort,
+} from '../format.ts';
+import { propertyTypeLabel } from '../property.ts';
+import ApartmentFilters from '../components/ApartmentFilters.tsx';
+import { applyFilters, emptyFilters, type Filters } from '../filters.ts';
 
 const ApartmentsPage = () => {
     const { cityId } = useParams();
     const navigate = useNavigate();
 
     const { isStaff, loading: authLoading } = useAuth();
+
+    const [filters, setFilters] = useState<Filters>(emptyFilters);
 
     const table = isStaff ? 'apartments' : 'apartments_public';
 
@@ -61,6 +73,7 @@ const ApartmentsPage = () => {
 
     const city = cityQuery.data;
     const list = apartmentsQuery.data ?? [];
+    const visible = applyFilters(list, filters);
 
     // ↓ разметка без изменений
 
@@ -73,24 +86,51 @@ const ApartmentsPage = () => {
                 <h1 className="text-3xl font-bold text-gray-900">
                     {city?.name}
                 </h1>
-                <p className="mt-1 text-gray-500">{list.length} объектов</p>
+                <p className="mt-1 text-gray-500">
+                    {visible.length === list.length
+                        ? formatObjects(list.length)
+                        : `Найдено ${formatObjects(visible.length)} из ${list.length}`}
+                </p>
             </header>
 
+            <div className="px-5 pb-4">
+                <ApartmentFilters value={filters} onChange={setFilters} />
+            </div>
+
             <div className="space-y-3 px-5">
-                {list.map((apt) => {
-                    const specsLine = [
-                        apt.rooms != null ? formatRoomsShort(apt.rooms) : null,
-                        apt.area != null ? formatArea(apt.area) : null,
-                        apt.floor != null
-                            ? `${apt.floor}${
-                                  apt.floorsTotal != null
-                                      ? '/' + apt.floorsTotal
-                                      : ''
-                              } эт.`
-                            : null,
-                    ]
-                        .filter(Boolean)
-                        .join(' · ');
+                {visible.map((apt) => {
+                    // «Дом · 4 комн. · 180 м² · 6 соток · 2 эт.»
+                    const parts: string[] = [];
+
+                    if (apt.propertyType !== 'apartment') {
+                        parts.push(propertyTypeLabel(apt.propertyType));
+                    }
+                    if (apt.rooms != null) {
+                        parts.push(formatRoomsShort(apt.rooms));
+                    }
+                    if (apt.area != null) {
+                        parts.push(formatArea(apt.area));
+                    }
+                    if (apt.landArea != null) {
+                        parts.push(formatLandArea(apt.landArea));
+                    }
+                    if (apt.floor != null) {
+                        parts.push(
+                            `${apt.floor}${
+                                apt.floorsTotal != null
+                                    ? '/' + apt.floorsTotal
+                                    : ''
+                            } эт.`
+                        );
+                    } else if (
+                        apt.propertyType === 'house' &&
+                        apt.floorsTotal != null
+                    ) {
+                        // у дома нет «этажа», но этажность сама по себе полезна
+                        parts.push(`${apt.floorsTotal} эт.`);
+                    }
+
+                    const specsLine = parts.join(' · ');
 
                     return (
                         <div
@@ -150,6 +190,21 @@ const ApartmentsPage = () => {
                         </div>
                     );
                 })}
+
+                {visible.length === 0 && list.length > 0 && (
+                    <div className="rounded-2xl bg-white p-6 text-center shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                        <p className="text-gray-500">
+                            Ничего не найдено под эти фильтры
+                        </p>
+                        <button
+                            type="button"
+                            onClick={() => setFilters(emptyFilters)}
+                            className="mt-3 font-medium text-blue-600 active:opacity-70"
+                        >
+                            Сбросить фильтры
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Кнопка добавления — только для админа */}

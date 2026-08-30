@@ -45,11 +45,41 @@ alter table public.apartments enable row level security;
 -- Здесь перечислено ровно то, что можно показывать клиенту: ни ownerName,
 -- ни whatsapp, ни mapUrl, ни comment в этот список не входят.
 -- Если на новой базе гость каталога не видит — проверь security_invoker у вью.
+
+alter table public.apartments
+    add column "propertyType" text not null default 'apartment'
+        check ("propertyType" in ('apartment', 'house', 'commercial')),
+  add column "landArea" numeric(6, 1);
+
+create or replace view public.apartments_public as
+select id, "cityId", address, price, "isSold", "dealType",
+       "downPayment", "installmentMonths", "monthlyPayment", photos, "createdAt",
+       "videoUrl",
+       rooms, area, floor, "floorsTotal", "builtYear",
+       "propertyType", "landArea"
+from public.apartments;
+
+notify pgrst, 'reload schema';
 create view public.apartments_public as
 select id, "cityId", address, price, "isSold", "dealType",
        "downPayment", "installmentMonths", "monthlyPayment", photos, "createdAt",
        "videoUrl"
 from public.apartments;
+
+alter table public.apartments
+    add column "propertyType" text not null default 'apartment'
+        check ("propertyType" in ('apartment', 'house', 'commercial')),
+  add column "landArea" numeric(6, 1);
+
+create or replace view public.apartments_public as
+select id, "cityId", address, price, "isSold", "dealType",
+       "downPayment", "installmentMonths", "monthlyPayment", photos, "createdAt",
+       "videoUrl",
+       rooms, area, floor, "floorsTotal", "builtYear",
+       "propertyType", "landArea"
+from public.apartments;
+
+notify pgrst, 'reload schema';
 
 grant select on public.apartments_public to anon, authenticated;
 

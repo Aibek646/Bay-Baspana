@@ -14,11 +14,16 @@ const AddApartmentPage = () => {
     const queryClient = useQueryClient();
 
     const saveMutation = useMutation({
-        mutationFn: async ({ form, dealType, files }: SubmitPayload) => {
+        mutationFn: async ({
+            form,
+            dealType,
+            propertyType,
+            files,
+        }: SubmitPayload) => {
             const photos = await uploadPhotos(files);
 
             const { error } = await supabase.from('apartments').insert({
-                ...formToApartment(form, dealType),
+                ...formToApartment(form, dealType, propertyType),
                 cityId,
                 photos,
             });

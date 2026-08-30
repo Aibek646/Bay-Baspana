@@ -23,3 +23,16 @@ export const formatRooms = (rooms: number) =>
 // для списка: «2 комн.»
 export const formatRoomsShort = (rooms: number) =>
     rooms === 0 ? 'Студия' : `${rooms} комн.`;
+
+// 1 сотка, 2 сотки, 6 соток; дробные — всегда «сотки» (2,5 сотки)
+export const formatLandArea = (value: number) => {
+    const text = value.toLocaleString('ru-RU');
+
+    return Number.isInteger(value)
+        ? `${text} ${plural(value, 'сотка', 'сотки', 'соток')}`
+        : `${text} сотки`;
+};
+
+// 1 объект, 2 объекта, 5 объектов
+export const formatObjects = (n: number) =>
+    `${n} ${plural(n, 'объект', 'объекта', 'объектов')}`;
