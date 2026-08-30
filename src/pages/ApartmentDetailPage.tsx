@@ -347,16 +347,31 @@ const ApartmentDetailPage = () => {
                             </div>
                         )}
 
-                        {/* Точный адрес на карте */}
-                        {apt.mapUrl && (
-                            <a
-                                href={apt.mapUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="press bg-surface mt-4 flex items-center justify-center gap-2 rounded-2xl py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:opacity-70 dark:text-blue-400"
-                            >
-                                📍 Посмотреть на карте
-                            </a>
+                        {/* Точный адрес: две карты, кнопки делят строку */}
+                        {(apt.mapUrl || apt.yandexUrl) && (
+                            <div className="mt-4 flex gap-2">
+                                {apt.mapUrl && (
+                                    <a
+                                        href={apt.mapUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="press bg-surface flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:opacity-70 dark:text-blue-400"
+                                    >
+                                        📍 2ГИС
+                                    </a>
+                                )}
+
+                                {apt.yandexUrl && (
+                                    <a
+                                        href={apt.yandexUrl}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="press bg-surface flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:opacity-70 dark:text-blue-400"
+                                    >
+                                        📍 Яндекс
+                                    </a>
+                                )}
+                            </div>
                         )}
                         <button
                             onClick={() =>

@@ -62,8 +62,13 @@ const mainFields: Field[] = [
     { name: 'complex', label: '🔒 ЖК', placeholder: 'ЖК Асыл Тау' },
     {
         name: 'mapUrl',
-        label: '🔒 Точный адрес — ссылка на карту',
+        label: '🔒 Точный адрес — 2ГИС',
         placeholder: 'https://2gis.kz/almaty/...',
+    },
+    {
+        name: 'yandexUrl',
+        label: '🔒 Точный адрес — Яндекс.Карты',
+        placeholder: 'https://yandex.kz/maps/...',
     },
 ];
 
@@ -90,6 +95,7 @@ const emptyForm: FormState = {
     ownerName: '',
     whatsapp: '',
     mapUrl: '',
+    yandexUrl: '',
     price: '',
     downPayment: '',
     installmentMonths: '',
@@ -134,9 +140,11 @@ const validate = (
         errors.whatsapp = 'Похоже, номер неполный';
     }
 
-    const mapUrl = String(form.mapUrl).trim();
-    if (mapUrl && !/^https?:\/\//.test(mapUrl)) {
-        errors.mapUrl = 'Ссылка должна начинаться с http';
+    for (const name of ['mapUrl', 'yandexUrl']) {
+        const url = String(form[name]).trim();
+        if (url && !/^https?:\/\//.test(url)) {
+            errors[name] = 'Ссылка должна начинаться с http';
+        }
     }
     const videoUrl = String(form.videoUrl).trim();
     if (videoUrl && !/^https?:\/\//.test(videoUrl)) {
@@ -246,6 +254,7 @@ const toFormState = (apt: Apartment): FormState => ({
     ownerName: apt.ownerName ?? '',
     whatsapp: apt.whatsapp ?? '',
     mapUrl: apt.mapUrl ?? '',
+    yandexUrl: apt.yandexUrl ?? '',
     price: apt.price != null ? String(apt.price) : '',
     downPayment: apt.downPayment != null ? String(apt.downPayment) : '',
     installmentMonths:

@@ -30,7 +30,8 @@ create table public.apartments (
                                    "downPayment" bigint,
                                    "installmentMonths" integer,
                                    "monthlyPayment" bigint,
-                                   "mapUrl" text,
+                                   "mapUrl" text, -- 2ГИС
+  "yandexUrl" text, -- Яндекс.Карты
                                    "videoUrl" text,
                                    "createdAt" timestamptz default now()
 );

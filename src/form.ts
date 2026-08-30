@@ -51,6 +51,7 @@ export const formToApartment = (
         whatsapp: textOrNull(form.whatsapp),
         complex: visible('complex') ? textOrNull(form.complex) : null,
         mapUrl: textOrNull(form.mapUrl),
+        yandexUrl: textOrNull(form.yandexUrl),
         comment: textOrNull(form.comment),
     };
 };

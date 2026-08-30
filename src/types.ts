@@ -32,7 +32,8 @@ export type Apartment = {
     // приватные — приходят только сотрудникам
     ownerName?: string;
     whatsapp?: string;
-    mapUrl?: string;
+    mapUrl?: string; // 2ГИС
+    yandexUrl?: string; // Яндекс.Карты
     comment?: string;
     complex?: string;
 };
