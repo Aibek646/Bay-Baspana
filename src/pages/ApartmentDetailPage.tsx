@@ -237,10 +237,10 @@ const ApartmentDetailPage = () => {
                     </span>
                 </div>
 
-                <h1 className="text-ink mt-3 text-2xl font-bold">
+                <h1 className="text-ink mt-3 text-2xl font-bold tracking-tight">
                     {apt.address}
                 </h1>
-                <div className="text-ink mt-1 text-xl font-bold">
+                <div className="price text-ink mt-1 text-3xl font-extrabold">
                     {formatPrice(apt.price)}
                 </div>
 

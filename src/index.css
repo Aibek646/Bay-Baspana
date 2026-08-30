@@ -4,6 +4,8 @@
    Разметка использует bg-surface / text-ink / border-line и т.д.,
    поэтому переключение темы не требует правок в компонентах */
 @theme {
+    --font-sans: 'Manrope', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
     --color-ground: #f1f3f6;
     --color-surface: #ffffff;
     --color-ink: #111827;
@@ -86,4 +88,11 @@ button:active,
     background-image: linear-gradient(135deg, #4f8cff, #4f46e5);
     color: #fff;
     box-shadow: 0 6px 14px -6px rgba(79, 70, 229, 0.6);
+}
+
+/* Цена — главное число на экране: моноширинные цифры не пляшут
+   при разной длине, плотный трекинг делает крупный размер собранным */
+@utility price {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
 }

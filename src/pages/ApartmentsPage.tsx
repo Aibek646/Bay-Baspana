@@ -197,7 +197,7 @@ const ApartmentsPage = () => {
                                     )}
                                 </div>
 
-                                <div className="text-ink mt-1 text-lg font-bold">
+                                <div className="price text-ink mt-1 text-lg font-extrabold">
                                     {formatPrice(apt.price)}
                                 </div>
 
