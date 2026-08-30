@@ -42,6 +42,45 @@ const ApartmentDetailPage = () => {
     const [fullscreen, setFullScreen] = useState(false);
     const fullRef = useRef<HTMLDivElement>(null);
 
+    // свайп вниз по полноэкранному фото закрывает просмотр
+    const touchStart = useRef<{ x: number; y: number } | null>(null);
+    const [dragY, setDragY] = useState(0);
+
+    const handleTouchStart = (e: React.TouchEvent) => {
+        const touch = e.touches[0];
+        touchStart.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!touchStart.current) return;
+
+        const touch = e.touches[0];
+        const dx = touch.clientX - touchStart.current.x;
+        const dy = touch.clientY - touchStart.current.y;
+
+        // горизонтальный жест — это листание фото, не мешаем ему
+        if (Math.abs(dx) > Math.abs(dy)) return;
+
+        setDragY(Math.max(0, dy));
+    };
+
+    const handleTouchEnd = (e: React.TouchEvent) => {
+        const start = touchStart.current;
+        const touch = e.changedTouches[0];
+
+        // расстояние берём из события, а не из dragY: при быстром движении
+        // состояние может не успеть обновиться до touchend
+        if (start && touch) {
+            const dx = touch.clientX - start.x;
+            const dy = touch.clientY - start.y;
+
+            if (dy > 100 && dy > Math.abs(dx)) setFullScreen(false);
+        }
+
+        setDragY(0);
+        touchStart.current = null;
+    };
+
     useEffect(() => {
         if (fullscreen && fullRef.current) {
             fullRef.current.scrollLeft =
@@ -341,9 +380,21 @@ const ApartmentDetailPage = () => {
             </div>
             {/* Полноэкранный просмотр */}
             {fullscreen && (
-                <div className="fixed inset-0 z-50 bg-black">
+                <div
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    style={{
+                        opacity: dragY > 0 ? Math.max(0.3, 1 - dragY / 400) : 1,
+                    }}
+                    className="fixed inset-0 z-50 bg-black"
+                >
                     <div
                         ref={fullRef}
+                        style={{
+                            transform: `translateY(${dragY}px)`,
+                            transition: dragY === 0 ? 'transform 0.2s' : 'none',
+                        }}
                         onScroll={(e) => {
                             const el = e.currentTarget;
                             setActivePhoto(
