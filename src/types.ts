@@ -5,7 +5,7 @@ export type City = {
 
 export type DealType = 'cash' | 'installment';
 
-export type PropertyType = 'apartment' | 'house' | 'commercial';
+export type PropertyType = 'apartment' | 'house' | 'commercial' | 'land';
 
 export type Apartment = {
     id: string;

@@ -49,7 +49,9 @@ alter table public.apartments enable row level security;
 
 alter table public.apartments
     add column "propertyType" text not null default 'apartment'
-        check ("propertyType" in ('apartment', 'house', 'commercial')),
+        check (
+      "propertyType" in ('apartment', 'house', 'commercial', 'land')
+    ),
   add column "landArea" numeric(6, 1);
 
 create or replace view public.apartments_public as

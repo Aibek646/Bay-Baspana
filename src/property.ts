@@ -4,6 +4,7 @@ export const PROPERTY_TYPES: { value: PropertyType; label: string }[] = [
     { value: 'apartment', label: 'Квартира' },
     { value: 'house', label: 'Дом' },
     { value: 'commercial', label: 'Коммерция' },
+    { value: 'land', label: 'Земля' },
 ];
 
 // Поля, состав которых зависит от типа объекта.
@@ -37,6 +38,8 @@ const fieldsByType: Record<PropertyType, string[]> = {
         'builtYear',
     ],
     commercial: ['area', 'floor', 'floorsTotal', 'builtYear', 'complex'],
+    // у земли из характеристик только сотки
+    land: ['landArea'],
 };
 
 export const isFieldVisible = (type: PropertyType, name: string) =>
@@ -50,6 +53,7 @@ export const propertyTypeEmoji: Record<PropertyType, string> = {
     apartment: '🏢',
     house: '🏠',
     commercial: '🏪',
+    land: '🏞️',
 };
 
 // Цвет типа — чтобы в списке тип читался мельком, до чтения текста.
@@ -59,4 +63,5 @@ export const propertyTypeChip: Record<PropertyType, string> = {
     house: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
     commercial:
         'bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300',
+    land: 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300',
 };

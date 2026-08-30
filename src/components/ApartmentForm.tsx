@@ -399,7 +399,7 @@ const ApartmentForm = ({
                 <label className="text-muted mb-1 block text-sm">
                     Тип объекта
                 </label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-2 gap-2">
                     {PROPERTY_TYPES.map((item) => (
                         <button
                             key={item.value}
