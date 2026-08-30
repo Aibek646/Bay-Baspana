@@ -95,7 +95,7 @@ const ApartmentsPage = () => {
         <div className="bg-ground min-h-screen">
             {/* Шапка липкая целиком: так безопасная зона учитывается один раз,
                 и под вырезом не просвечивает уезжающий список */}
-            <header className="pt-safe bg-ground sticky top-0 z-20 space-y-3 px-5 pb-3">
+            <header className="pt-safe bg-ground/80 border-line/70 sticky top-0 z-20 space-y-3 border-b px-5 pb-3 backdrop-blur-md">
                 <div className="flex items-center gap-3">
                     <BackButton to="/" />
                     <h1 className="text-ink text-2xl font-bold">
