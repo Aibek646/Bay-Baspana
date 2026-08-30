@@ -13,6 +13,7 @@ import {
     formatRooms,
 } from '../format.ts';
 import { propertyTypeLabel } from '../property.ts';
+import { isNew } from '../dates.ts';
 
 const ApartmentDetailPage = () => {
     const { id } = useParams();
@@ -169,6 +170,12 @@ const ApartmentDetailPage = () => {
                     ) : (
                         <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-700">
                             В продаже
+                        </span>
+                    )}
+
+                    {isNew(apt.createdAt) && (
+                        <span className="rounded-full bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800">
+                            Новое
                         </span>
                     )}
 

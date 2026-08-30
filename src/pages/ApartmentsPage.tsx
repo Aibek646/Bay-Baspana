@@ -14,6 +14,7 @@ import {
     formatRoomsShort,
 } from '../format.ts';
 import { propertyTypeLabel } from '../property.ts';
+import { isNew } from '../dates.ts';
 import ApartmentFilters from '../components/ApartmentFilters.tsx';
 import { applyFilters, emptyFilters, type Filters } from '../filters.ts';
 
@@ -139,7 +140,7 @@ const ApartmentsPage = () => {
                             className="flex cursor-pointer gap-4 rounded-2xl bg-white p-4 shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 active:opacity-70 active:shadow-[0_1px_4px_rgba(0,0,0,0.08)]"
                         >
                             {/* Миниатюра */}
-                            <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-200">
+                            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-gray-200">
                                 {apt.photos.length > 0 ? (
                                     <img
                                         src={apt.photos[0]}
@@ -150,6 +151,12 @@ const ApartmentsPage = () => {
                                     <div className="flex h-full w-full items-center justify-center text-3xl">
                                         🏠
                                     </div>
+                                )}
+
+                                {isNew(apt.createdAt) && (
+                                    <span className="absolute top-1 left-1 rounded-full bg-amber-400 px-1.5 text-[9px] leading-4 font-semibold text-amber-950 shadow">
+                                        Новое
+                                    </span>
                                 )}
                             </div>
 
