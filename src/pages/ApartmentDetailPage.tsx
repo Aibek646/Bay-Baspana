@@ -42,7 +42,7 @@ const ApartmentDetailPage = () => {
     const [fullscreen, setFullScreen] = useState(false);
     const fullRef = useRef<HTMLDivElement>(null);
 
-    // свайп вниз по полноэкранному фото закрывает просмотр
+    // свайп по фото вверх или вниз закрывает полноэкранный просмотр
     const touchStart = useRef<{ x: number; y: number } | null>(null);
     const [dragY, setDragY] = useState(0);
 
@@ -61,7 +61,7 @@ const ApartmentDetailPage = () => {
         // горизонтальный жест — это листание фото, не мешаем ему
         if (Math.abs(dx) > Math.abs(dy)) return;
 
-        setDragY(Math.max(0, dy));
+        setDragY(dy);
     };
 
     const handleTouchEnd = (e: React.TouchEvent) => {
@@ -74,7 +74,9 @@ const ApartmentDetailPage = () => {
             const dx = touch.clientX - start.x;
             const dy = touch.clientY - start.y;
 
-            if (dy > 100 && dy > Math.abs(dx)) setFullScreen(false);
+            if (Math.abs(dy) > 100 && Math.abs(dy) > Math.abs(dx)) {
+                setFullScreen(false);
+            }
         }
 
         setDragY(0);
@@ -384,7 +386,7 @@ const ApartmentDetailPage = () => {
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                     style={{
-                        opacity: dragY > 0 ? Math.max(0.3, 1 - dragY / 400) : 1,
+                        opacity: Math.max(0.3, 1 - Math.abs(dragY) / 400),
                     }}
                     className="fixed inset-0 z-50 bg-black"
                 >
