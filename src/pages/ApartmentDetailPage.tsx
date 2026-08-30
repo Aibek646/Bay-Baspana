@@ -6,6 +6,7 @@ import type { Apartment } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import BackButton from '../components/BackButton.tsx';
+import { PinIcon } from '../components/icons.tsx';
 import { DetailSkeleton } from '../components/Skeleton.tsx';
 import {
     formatArea,
@@ -363,7 +364,8 @@ const ApartmentDetailPage = () => {
                                         rel="noreferrer"
                                         className="press bg-surface flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:opacity-70 dark:text-blue-400"
                                     >
-                                        📍 2ГИС
+                                        <PinIcon />
+                                        2ГИС
                                     </a>
                                 )}
 
@@ -374,7 +376,8 @@ const ApartmentDetailPage = () => {
                                         rel="noreferrer"
                                         className="press bg-surface flex flex-1 items-center justify-center gap-2 rounded-2xl py-3 font-semibold text-blue-600 shadow-[0_4px_14px_rgba(0,0,0,0.10)] active:opacity-70 dark:text-blue-400"
                                     >
-                                        📍 Яндекс
+                                        <PinIcon />
+                                        Яндекс
                                     </a>
                                 )}
                             </div>

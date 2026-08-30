@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '../components/BackButton.tsx';
+import { PinIcon } from '../components/icons.tsx';
 import { RowsSkeleton } from '../components/Skeleton.tsx';
 import { supabase } from '../supabase.ts';
 import type { Contact } from '../types.ts';
@@ -51,7 +52,9 @@ const ContactsPage = () => {
             <header className="pt-safe px-5 pb-4">
                 <div className="flex items-center gap-3">
                     <BackButton to="/" />
-                    <h1 className="text-ink text-2xl font-bold">Контакты</h1>
+                    <h1 className="text-ink text-2xl font-bold">
+                        Важные контакты
+                    </h1>
                 </div>
             </header>
 
@@ -129,9 +132,10 @@ const ContactsPage = () => {
                                         href={contact.mapUrl}
                                         target="_blank"
                                         rel="noreferrer"
-                                        className="press bg-ground flex-1 rounded-xl py-2.5 text-center font-medium text-blue-600 dark:text-blue-400"
+                                        className="press bg-ground flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 font-medium text-blue-600 dark:text-blue-400"
                                     >
-                                        📍 На карте
+                                        <PinIcon />
+                                        На карте
                                     </a>
                                 )}
                             </div>
