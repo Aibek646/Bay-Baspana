@@ -56,3 +56,13 @@ export const formatPhone = (value: string) => {
 
     return '+' + parts.join(' ');
 };
+
+// «2gis.kz/...» → «https://2gis.kz/...».
+// Без схемы браузер считает ссылку относительной и открывает
+// страницу внутри приложения вместо карты
+export const toUrl = (value: string | boolean) => {
+    const raw = String(value).trim();
+    if (!raw) return null;
+
+    return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+};

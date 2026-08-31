@@ -165,7 +165,7 @@ const CitiesPage = () => {
                                 <path d="M15 9.5h3.5" />
                                 <path d="M15 13.5h3.5" />
                             </svg>
-                            Важные контакты
+                            Контакты
                         </span>
                         <span className="text-muted text-2xl">›</span>
                     </button>

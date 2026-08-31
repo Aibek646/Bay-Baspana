@@ -52,9 +52,7 @@ const ContactsPage = () => {
             <header className="pt-safe px-5 pb-4">
                 <div className="flex items-center gap-3">
                     <BackButton to="/" />
-                    <h1 className="text-ink text-2xl font-bold">
-                        Важные контакты
-                    </h1>
+                    <h1 className="text-ink text-2xl font-bold">Партнеры</h1>
                 </div>
             </header>
 

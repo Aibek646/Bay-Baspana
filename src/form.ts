@@ -1,6 +1,7 @@
 import type { FormState } from './components/ApartmentForm';
 import type { Apartment, DealType, PropertyType } from './types';
 import { isFieldVisible } from './property';
+import { toUrl } from './format';
 
 // '' → null, иначе число. Пустое поле в базе должно быть null, а не 0
 export const numOrNull = (value: string | boolean) => {
@@ -49,7 +50,7 @@ export const formToApartment = (
         floorsTotal: numIfVisible('floorsTotal'),
         builtYear: numIfVisible('builtYear'),
         material: textIfVisible('material'),
-        videoUrl: textOrNull(form.videoUrl),
+        videoUrl: toUrl(form.videoUrl),
 
         downPayment: isInstallment ? numOrNull(form.downPayment) : null,
         installmentMonths: isInstallment
@@ -60,8 +61,8 @@ export const formToApartment = (
         ownerName: textOrNull(form.ownerName),
         whatsapp: textOrNull(form.whatsapp),
         complex: textIfVisible('complex'),
-        mapUrl: textOrNull(form.mapUrl),
-        yandexUrl: textOrNull(form.yandexUrl),
+        mapUrl: toUrl(form.mapUrl),
+        yandexUrl: toUrl(form.yandexUrl),
         comment: textOrNull(form.comment),
     };
 };

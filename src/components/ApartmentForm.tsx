@@ -148,15 +148,13 @@ const validate = (
         errors.whatsapp = 'Похоже, номер неполный';
     }
 
-    for (const name of ['mapUrl', 'yandexUrl']) {
+    // https:// дописывается при сохранении, поэтому проверяем только,
+    // что это вообще похоже на адрес
+    for (const name of ['mapUrl', 'yandexUrl', 'videoUrl']) {
         const url = String(form[name]).trim();
-        if (url && !/^https?:\/\//.test(url)) {
-            errors[name] = 'Ссылка должна начинаться с http';
+        if (url && (!url.includes('.') || /\s/.test(url))) {
+            errors[name] = 'Похоже, это не ссылка';
         }
-    }
-    const videoUrl = String(form.videoUrl).trim();
-    if (videoUrl && !/^https?:\/\//.test(videoUrl)) {
-        errors.videoUrl = 'Ссылка должна начинаться с http';
     }
 
     if (dealType === 'installment') {

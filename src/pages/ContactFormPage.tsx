@@ -9,6 +9,7 @@ import type { Contact } from '../types.ts';
 import { useAuth } from '../useAuth.ts';
 import { contactKeys } from '../queryKey.ts';
 import { humanError } from '../errors.ts';
+import { toUrl } from '../format.ts';
 
 const fields: Field[] = [
     { name: 'name', label: 'Имя', placeholder: 'Айгуль Сериковна' },
@@ -65,7 +66,7 @@ const ContactFormPage = () => {
     const isEdit = Boolean(id);
     const [form, setForm] = useState<FormState>(empty);
     const [ready, setReady] = useState(!isEdit);
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const [confirmDelete, setConfirmDelete] = useState(false);
 
     const contactQuery = useQuery({
@@ -97,7 +98,7 @@ const ContactFormPage = () => {
                 role: textOrNull(form.role),
                 phone: textOrNull(form.phone),
                 address: textOrNull(form.address),
-                mapUrl: textOrNull(form.mapUrl),
+                mapUrl: toUrl(form.mapUrl),
                 comment: textOrNull(form.comment),
             };
 
@@ -146,14 +147,31 @@ const ContactFormPage = () => {
 
     const setField = (name: string, value: string | boolean) => {
         setForm((prev) => ({ ...prev, [name]: value }));
-        setError('');
+
+        setErrors((prev) => {
+            if (!prev[name]) return prev;
+            const next = { ...prev };
+            delete next[name];
+            return next;
+        });
     };
 
     const handleSave = () => {
+        const found: Record<string, string> = {};
+
         if (!String(form.name).trim()) {
-            setError('Укажите имя');
-            return;
+            found.name = 'Укажите имя';
         }
+
+        // https:// допишется при сохранении, здесь ловим только явный мусор
+        const map = String(form.mapUrl).trim();
+        if (map && (!map.includes('.') || /\s/.test(map))) {
+            found.mapUrl = 'Похоже, это не ссылка';
+        }
+
+        setErrors(found);
+        if (Object.keys(found).length > 0) return;
+
         saveMutation.mutate();
     };
 
@@ -175,7 +193,7 @@ const ContactFormPage = () => {
                         field={field}
                         value={form[field.name]}
                         onChange={(value) => setField(field.name, value)}
-                        error={field.name === 'name' ? error : undefined}
+                        error={errors[field.name]}
                     />
                 ))}
 
