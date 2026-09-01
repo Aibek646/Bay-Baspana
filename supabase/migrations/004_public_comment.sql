@@ -3,9 +3,14 @@
 -- то, что раньше приходилось рассказывать по телефону.
 -- ВАЖНО: всё, что уже лежит в comment, станет видно подписчикам.
 
--- create or replace здесь работает, потому что колонка дописывается в конец
--- списка. Права на вью при replace сохраняются, grant не нужен
-create or replace view public.apartments_public as
+-- drop + create, а не create or replace: replace умеет только дописывать
+-- колонки в конец и падает, если порядок отличается хоть на одну позицию
+-- (42P16 cannot change name of view column). Заодно приводим список колонок
+-- к окончательному: с "soldAt" и material, которых покупателям не хватало.
+-- После drop права слетают — grant ниже обязателен.
+drop view if exists public.apartments_public;
+
+create view public.apartments_public as
 select id, "cityId", "propertyType", address, price, photos, "createdAt",
        "isSold", "soldAt",
        "dealType", "downPayment", "installmentMonths", "monthlyPayment",
@@ -14,5 +19,8 @@ select id, "cityId", "propertyType", address, price, photos, "createdAt",
        comment
 from public.apartments
 where public.has_access();
+
+-- anon не получает ничего: без аккаунта каталога нет вообще
+grant select on public.apartments_public to authenticated;
 
 notify pgrst, 'reload schema';
