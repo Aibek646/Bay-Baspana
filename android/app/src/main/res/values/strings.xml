@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">BAY BASPANA</string>
+    <string name="title_activity_main">BAY BASPANA</string>
+    <string name="package_name">kz.baybaspana.app</string>
+    <string name="custom_url_scheme">kz.baybaspana.app</string>
+</resources>

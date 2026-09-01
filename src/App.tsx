@@ -5,6 +5,7 @@ import ApartmentDetailPage from './pages/ApartmentDetailPage.tsx';
 import AddApartmentPage from './pages/AddApartmentPage.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import EditApartmentPage from './pages/EditApartmentPage.tsx';
+import PrivacyPage from './pages/PrivacyPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
 import PasswordPage from './pages/PasswordPage.tsx';
 import ContactsPage from './pages/ContactsPage.tsx';
@@ -49,6 +50,8 @@ function App() {
             <Route path="/contacts/:id/edit" element={<ContactFormPage />} />
             <Route path="/subscribe" element={<SubscribePage />} />
             <Route path="/subscriptions" element={<SubscriptionsPage />} />
+            {/* без входа: ссылку на политику требуют магазины */}
+            <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );

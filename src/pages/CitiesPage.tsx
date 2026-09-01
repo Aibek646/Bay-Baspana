@@ -122,7 +122,7 @@ const CitiesPage = () => {
                                 className="px-1 text-xs font-medium text-blue-600 active:opacity-70 dark:text-blue-400"
                                 onClick={() => navigate('/password')}
                             >
-                                Сменить пароль
+                                Аккаунт
                             </button>
                         </div>
                     )}

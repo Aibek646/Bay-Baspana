@@ -157,6 +157,14 @@ const LoginPage = () => {
                             Забыли пароль?
                         </button>
                     ))}
+
+                {/* ссылка на политику должна быть видна до регистрации */}
+                <button
+                    onClick={() => navigate('/privacy')}
+                    className="text-muted w-full py-2 text-xs underline"
+                >
+                    Политика конфиденциальности
+                </button>
             </div>
         </div>
     );

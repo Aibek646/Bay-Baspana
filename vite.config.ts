@@ -8,6 +8,10 @@ export default defineConfig({
         react(),
         tailwindcss(),
         VitePWA({
+            // В сборке для App Store и Google Play сервис-воркер только вредит:
+            // приложение и так стоит на телефоне, а его кеш умеет намертво
+            // подсунуть старую версию, которую нечем сбросить
+            disable: process.env.VITE_STORE_BUILD === '1',
             registerType: 'autoUpdate',
             includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
             manifest: {

@@ -10,13 +10,15 @@ const inputClass =
 
 const PasswordPage = () => {
     const navigate = useNavigate();
-    const { session, loading } = useAuth();
+    const { session, isStaff, loading } = useAuth();
 
     const [password, setPassword] = useState('');
     const [repeat, setRepeat] = useState('');
     const [error, setError] = useState('');
     const [saving, setSaving] = useState(false);
     const [done, setDone] = useState(false);
+    const [confirmOpen, setConfirmOpen] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     if (loading) {
         return (
@@ -72,11 +74,30 @@ const PasswordPage = () => {
         setDone(true);
     };
 
+    // Удаление аккаунта — требование Google Play и App Store: если аккаунт
+    // можно создать в приложении, его должно быть можно и удалить там же.
+    // Данные уносит сама база каскадом, здесь только вызов и выход
+    const handleDelete = async () => {
+        setDeleting(true);
+        setError('');
+
+        const { error: rpcError } = await supabase.rpc('delete_my_account');
+
+        if (rpcError) {
+            setDeleting(false);
+            setError(humanError(rpcError) ?? 'Не удалось удалить аккаунт');
+            return;
+        }
+
+        await supabase.auth.signOut();
+        navigate('/login', { replace: true });
+    };
+
     return (
         <div className="pt-safe bg-ground min-h-screen px-5">
             <BackButton to="/" />
 
-            <h1 className="text-ink mt-4 text-3xl font-bold">Смена пароля</h1>
+            <h1 className="text-ink mt-4 text-3xl font-bold">Аккаунт</h1>
             <p className="text-muted mt-1 mb-6">{session.user.email}</p>
 
             {done ? (
@@ -126,6 +147,48 @@ const PasswordPage = () => {
                     </button>
                 </div>
             )}
+
+            <div className="border-line-soft mt-10 border-t pt-6 pb-10">
+                {isStaff ? (
+                    <p className="text-muted text-sm">
+                        Аккаунт сотрудника удаляется из панели Supabase — здесь
+                        нельзя, чтобы не остаться без доступа к базе.
+                    </p>
+                ) : confirmOpen ? (
+                    <div className="rounded-2xl border border-red-500/40 p-5">
+                        <p className="text-ink font-semibold">
+                            Удалить аккаунт?
+                        </p>
+                        <p className="text-muted mt-1 text-sm">
+                            Вместе с аккаунтом удалится подписка. Восстановить
+                            не получится — доступ придётся покупать заново.
+                        </p>
+
+                        <div className="mt-4 flex gap-2">
+                            <button
+                                onClick={() => setConfirmOpen(false)}
+                                className="bg-surface text-ink flex-1 rounded-xl py-3 font-semibold"
+                            >
+                                Отмена
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                disabled={deleting}
+                                className="flex-1 rounded-xl bg-red-500 py-3 font-semibold text-white disabled:opacity-50"
+                            >
+                                {deleting ? 'Удаляем…' : 'Удалить'}
+                            </button>
+                        </div>
+                    </div>
+                ) : (
+                    <button
+                        onClick={() => setConfirmOpen(true)}
+                        className="text-sm font-medium text-red-500 dark:text-red-400"
+                    >
+                        Удалить аккаунт
+                    </button>
+                )}
+            </div>
         </div>
     );
 };

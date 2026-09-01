@@ -9,9 +9,15 @@
         "build:store": "VITE_STORE_BUILD=1 tsc -b && VITE_STORE_BUILD=1 vite build",
         "lint": "eslint .",
         "preview": "vite preview",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "android": "npm run build:store && cap sync android",
+        "android:open": "cap open android",
+        "aab": "npm run android && cd android && ./gradlew bundleRelease"
     },
     "dependencies": {
+        "@capacitor/android": "^8.5.1",
+        "@capacitor/cli": "^8.5.1",
+        "@capacitor/core": "^8.5.1",
         "@supabase/supabase-js": "^2.110.8",
         "@tailwindcss/vite": "^4.3.3",
         "@tanstack/react-query": "^5.101.4",

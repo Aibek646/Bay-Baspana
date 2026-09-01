@@ -15,3 +15,10 @@ export const accessCode = (userId: string) =>
 // Доступ в этой сборке открывается вне приложения, риелтором.
 // Собирать так: npm run build:store
 export const STORE_BUILD = import.meta.env.VITE_STORE_BUILD === '1';
+
+// Владелец данных в политике конфиденциальности. Здесь физлицо, а не
+// компания: Google Play сверяет это имя с удостоверением личности при
+// верификации аккаунта, и придуманное ТОО проверку не пройдёт
+export const OWNER_NAME = 'Айбек Рамазанов';
+export const SUPPORT_CONTACT = 'r4mazanov.aibek@yandex.ru';
+export const POLICY_DATE = '1 сентября 2026';
