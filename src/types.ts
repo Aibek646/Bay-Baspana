@@ -24,6 +24,7 @@ export type Apartment = {
     propertyType: PropertyType;
     landArea?: number;
     material?: string;
+    comment?: string; // описание объекта, видят и покупатели
 
     rooms?: number;
     area?: number;
@@ -36,7 +37,6 @@ export type Apartment = {
     whatsapp?: string;
     mapUrl?: string; // 2ГИС
     yandexUrl?: string; // Яндекс.Карты
-    comment?: string;
     complex?: string;
 };
 

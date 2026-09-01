@@ -89,9 +89,9 @@ const tailFields: Field[] = [
     { name: 'isSold', label: 'Продано', type: 'checkbox' },
     {
         name: 'comment',
-        label: '🔒 Комментарий',
+        label: 'Описание — видят покупатели',
         type: 'textarea',
-        placeholder: 'впишите комментарий',
+        placeholder: 'свежий ремонт, тихий двор, рядом школа',
     },
 ];
 

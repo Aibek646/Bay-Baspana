@@ -322,6 +322,17 @@ const ApartmentDetailPage = () => {
                     )}
                 </div>
 
+                {/* Описание видят и покупатели. Пустое показываем только
+                    сотруднику: ему важно видеть, что поле не заполнено */}
+                {(apt.comment || isStaff) && (
+                    <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                        <div className="text-muted text-sm">Описание</div>
+                        <div className="text-ink mt-1 whitespace-pre-line">
+                            {apt.comment || 'Нет описания'}
+                        </div>
+                    </div>
+                )}
+
                 {isStaff && (
                     <>
                         {/* Хозяин + WhatsApp */}
@@ -382,15 +393,6 @@ const ApartmentDetailPage = () => {
                                 )}
                             </div>
                         )}
-
-                        <div className="bg-surface mt-4 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
-                            <div className="text-muted text-sm">
-                                Комментарий
-                            </div>
-                            <div className="text-ink mt-1">
-                                {apt.comment || 'Нет комментария'}
-                            </div>
-                        </div>
                     </>
                 )}
             </div>
