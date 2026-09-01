@@ -3,10 +3,15 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
-import { accessKeys } from '../queryKey.ts';
+import { accessKeys, profileKeys } from '../queryKey.ts';
 import { humanError } from '../errors.ts';
 import { formatPrice } from '../format.ts';
-import { accessCode, KASPI_PHONE, SUBSCRIPTION_PRICE } from '../config.ts';
+import {
+    accessCode,
+    KASPI_PHONE,
+    STORE_BUILD,
+    SUBSCRIPTION_PRICE,
+} from '../config.ts';
 import type { AccessRequest } from '../types.ts';
 
 const SubscribePage = () => {
@@ -22,7 +27,7 @@ const SubscribePage = () => {
 
     const requestQuery = useQuery({
         queryKey: accessKeys.mine(userId),
-        enabled: !!userId,
+        enabled: !!userId && !STORE_BUILD,
         queryFn: async () => {
             const { data, error } = await supabase
                 .from('access_requests')
@@ -51,6 +56,11 @@ const SubscribePage = () => {
         },
     });
 
+    // риелтор открыл доступ, пока человек сидел на этом экране —
+    // перечитываем профиль, чтобы не просить его перезапускать приложение
+    const recheck = () =>
+        queryClient.invalidateQueries({ queryKey: profileKeys.all });
+
     if (loading) {
         return (
             <div className="pt-safe bg-ground text-muted min-h-screen p-5">
@@ -73,6 +83,43 @@ const SubscribePage = () => {
                     className="btn-accent mt-6 w-full rounded-xl py-3 font-semibold"
                 >
                     К объектам
+                </button>
+            </div>
+        );
+    }
+
+    // Магазинная сборка: ни цены, ни номера, ни кнопки оплаты.
+    // Подробнее, почему так, — в комментарии к STORE_BUILD в config.ts
+    if (STORE_BUILD) {
+        return (
+            <div className="pt-safe bg-ground min-h-screen px-5 pb-10">
+                <h1 className="text-ink mt-4 text-2xl font-bold">
+                    Доступ закрыт
+                </h1>
+                <p className="text-muted mt-1">{session.user.email}</p>
+
+                <div className="bg-surface mt-5 rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]">
+                    <p className="text-ink font-semibold">
+                        Каталог доступен по договорённости
+                    </p>
+                    <p className="text-muted mt-2 text-sm">
+                        Доступ к объектам открывает риелтор. Если вы уже
+                        договорились — нажмите «Проверить снова».
+                    </p>
+                </div>
+
+                <button
+                    onClick={recheck}
+                    className="btn-accent mt-4 w-full rounded-xl py-3 font-semibold"
+                >
+                    Проверить снова
+                </button>
+
+                <button
+                    onClick={() => supabase.auth.signOut()}
+                    className="text-muted mt-6 w-full py-2 text-sm"
+                >
+                    Выйти
                 </button>
             </div>
         );
@@ -127,6 +174,12 @@ const SubscribePage = () => {
                         Обычно открываем доступ в течение дня. Если срочно —
                         напишите нам.
                     </p>
+                    <button
+                        onClick={recheck}
+                        className="mt-3 text-sm font-medium text-blue-600 dark:text-blue-400"
+                    >
+                        Проверить снова
+                    </button>
                 </div>
             ) : (
                 <>

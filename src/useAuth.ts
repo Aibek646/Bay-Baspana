@@ -4,6 +4,7 @@ import type { Session } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from './supabase.ts';
 import { isActiveUntil } from './dates.ts';
+import { profileKeys } from './queryKey.ts';
 
 export type Role = 'admin' | 'agent' | 'viewer';
 
@@ -31,7 +32,7 @@ export const useAuth = () => {
     const userId = session?.user.id;
 
     const profileQuery = useQuery({
-        queryKey: ['profile', userId],
+        queryKey: profileKeys.detail(userId),
         enabled: !!userId,
         queryFn: async () => {
             const { data, error } = await supabase

@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
+        "build:store": "VITE_STORE_BUILD=1 tsc -b && VITE_STORE_BUILD=1 vite build",
         "lint": "eslint .",
         "preview": "vite preview",
         "format": "prettier --write ."

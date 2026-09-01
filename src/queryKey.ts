@@ -1,3 +1,8 @@
+export const profileKeys = {
+    all: ['profile'],
+    detail: (userId?: string) => ['profile', userId ?? null],
+};
+
 export const apartmentKeys = {
     all: ['apartments'],
     counts: () => ['apartments', 'counts'],
