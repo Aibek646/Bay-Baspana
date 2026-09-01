@@ -20,3 +20,11 @@ export const contactKeys = {
     list: () => ['contacts', 'list'],
     detail: (id?: string) => ['contacts', 'detail', id ?? null],
 };
+
+export const accessKeys = {
+    all: ['access'],
+    mine: (userId?: string) => ['access', 'mine', userId ?? null],
+    pending: () => ['access', 'pending'],
+    pendingCount: () => ['access', 'pendingCount'],
+    subscribers: () => ['access', 'subscribers'],
+};

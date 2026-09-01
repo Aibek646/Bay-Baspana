@@ -22,3 +22,11 @@ export const isArchived = (isSold: boolean, soldAt?: string) => {
 
     return Date.now() - sold > ARCHIVE_AFTER_DAYS * 24 * 60 * 60 * 1000;
 };
+
+// Действует ли доступ до указанной даты
+export const isActiveUntil = (until?: string | null) => {
+    if (!until) return false;
+
+    const end = new Date(until).getTime();
+    return Number.isFinite(end) && end > Date.now();
+};

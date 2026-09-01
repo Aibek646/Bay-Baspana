@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react';
 import type { Session } from '@supabase/supabase-js';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from './supabase.ts';
+import { isActiveUntil } from './dates.ts';
 
 export type Role = 'admin' | 'agent' | 'viewer';
+
+type Profile = { role: Role; paidUntil: string | null };
 
 export const useAuth = () => {
     const [session, setSession] = useState<Session | null>(null);
@@ -27,28 +30,37 @@ export const useAuth = () => {
 
     const userId = session?.user.id;
 
-    const roleQuery = useQuery({
-        queryKey: ['role', userId],
+    const profileQuery = useQuery({
+        queryKey: ['profile', userId],
         enabled: !!userId,
         queryFn: async () => {
             const { data, error } = await supabase
                 .from('profiles')
-                .select('role')
+                .select('role, paidUntil')
                 .eq('id', userId!)
                 .maybeSingle();
 
             if (error) throw error;
-            return (data?.role ?? null) as Role | null;
+            return (data ?? null) as Profile | null;
         },
     });
 
-    const role = userId ? (roleQuery.data ?? null) : null;
+    const profile = userId ? (profileQuery.data ?? null) : null;
+    const role = profile?.role ?? null;
+    const paidUntil = profile?.paidUntil ?? null;
+
+    const isStaff = role === 'admin' || role === 'agent';
+    const isPaid = isActiveUntil(paidUntil);
 
     return {
         session,
         role,
-        loading: authLoading || roleQuery.isLoading,
-        isStaff: role === 'admin' || role === 'agent',
+        paidUntil,
+        loading: authLoading || profileQuery.isLoading,
+        isStaff,
         isAdmin: role === 'admin',
+        isPaid,
+        // каталог видят сотрудники и оплатившие покупатели
+        hasAccess: isStaff || isPaid,
     };
 };

@@ -9,20 +9,46 @@ import NotFoundPage from './pages/NotFoundPage.tsx';
 import PasswordPage from './pages/PasswordPage.tsx';
 import ContactsPage from './pages/ContactsPage.tsx';
 import ContactFormPage from './pages/ContactFormPage.tsx';
+import SubscribePage from './pages/SubscribePage.tsx';
+import SubscriptionsPage from './pages/SubscriptionsPage.tsx';
+import RequireAccess from './components/RequireAccess.tsx';
 
 function App() {
     return (
         <Routes>
-            <Route path="/" element={<CitiesPage />} />
-            <Route path="/city/:cityId" element={<ApartmentsPage />} />
+            <Route
+                path="/"
+                element={
+                    <RequireAccess>
+                        <CitiesPage />
+                    </RequireAccess>
+                }
+            />
+            <Route
+                path="/city/:cityId"
+                element={
+                    <RequireAccess>
+                        <ApartmentsPage />
+                    </RequireAccess>
+                }
+            />
             <Route path="/city/:cityId/add" element={<AddApartmentPage />} />
-            <Route path="/apartment/:id" element={<ApartmentDetailPage />} />
+            <Route
+                path="/apartment/:id"
+                element={
+                    <RequireAccess>
+                        <ApartmentDetailPage />
+                    </RequireAccess>
+                }
+            />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/apartment/:id/edit" element={<EditApartmentPage />} />
             <Route path="/password" element={<PasswordPage />} />
             <Route path="/contacts" element={<ContactsPage />} />
             <Route path="/contacts/new" element={<ContactFormPage />} />
             <Route path="/contacts/:id/edit" element={<ContactFormPage />} />
+            <Route path="/subscribe" element={<SubscribePage />} />
+            <Route path="/subscriptions" element={<SubscriptionsPage />} />
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );

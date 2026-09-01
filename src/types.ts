@@ -52,3 +52,15 @@ export type Contact = {
     comment?: string;
     createdAt?: string;
 };
+
+// Заявка на открытие доступа: покупатель перевёл деньги и нажал «Я оплатил»
+export type AccessRequest = {
+    id: string;
+    userId: string;
+    code: string;
+    payerName?: string;
+    status: 'pending' | 'approved' | 'rejected';
+    createdAt: string;
+    decidedAt?: string;
+    profiles?: { email?: string; paidUntil?: string; role?: string };
+};

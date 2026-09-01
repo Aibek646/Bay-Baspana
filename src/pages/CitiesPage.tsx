@@ -5,6 +5,7 @@ import { supabase } from '../supabase.ts';
 import { useAuth } from '../useAuth.ts';
 import { apartmentKeys } from '../queryKey.ts';
 import { RowsSkeleton } from '../components/Skeleton.tsx';
+import { accessKeys } from '../queryKey.ts';
 import { useRef } from 'react';
 
 type CityCount = { cityId: string; total: number };
@@ -36,6 +37,20 @@ const CitiesPage = () => {
             const { data, error } = await supabase.from('cities').select('*');
             if (error) throw error;
             return data as City[];
+        },
+    });
+
+    const pendingQuery = useQuery({
+        queryKey: accessKeys.pendingCount(),
+        enabled: !authLoading && isStaff,
+        queryFn: async () => {
+            const { count, error } = await supabase
+                .from('access_requests')
+                .select('id', { count: 'exact', head: true })
+                .eq('status', 'pending');
+
+            if (error) throw error;
+            return count ?? 0;
         },
     });
 
@@ -138,7 +153,43 @@ const CitiesPage = () => {
             </div>
 
             {isStaff && (
-                <div className="px-5 pt-3">
+                <div className="space-y-3 px-5 pt-3">
+                    <button
+                        onClick={() => navigate('/subscriptions')}
+                        className="bg-surface text-ink flex w-full items-center justify-between rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]"
+                    >
+                        <span className="flex items-center gap-3 font-semibold">
+                            <svg
+                                viewBox="0 0 24 24"
+                                className="h-5 w-5 text-blue-600 dark:text-blue-400"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            >
+                                <rect
+                                    x="2"
+                                    y="5"
+                                    width="20"
+                                    height="14"
+                                    rx="2"
+                                />
+                                <path d="M2 10h20" />
+                            </svg>
+                            Подписки
+                        </span>
+
+                        <span className="flex items-center gap-2">
+                            {(pendingQuery.data ?? 0) > 0 && (
+                                <span className="btn-accent-sm rounded-full px-2 py-0.5 text-xs font-semibold">
+                                    {pendingQuery.data}
+                                </span>
+                            )}
+                            <span className="text-muted text-2xl">›</span>
+                        </span>
+                    </button>
+
                     <button
                         onClick={() => navigate('/contacts')}
                         className="bg-surface text-ink flex w-full items-center justify-between rounded-2xl p-5 shadow-[0_4px_14px_rgba(0,0,0,0.10)]"
